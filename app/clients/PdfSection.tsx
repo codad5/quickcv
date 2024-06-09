@@ -1,5 +1,5 @@
 'use client';
-import { PrintableComponent } from "@/components/forms/pdf/viewer";
+import { PrintableComponent } from "@/components/forms/pdf/Viewer";
 import { useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import Markdown from "react-markdown";
