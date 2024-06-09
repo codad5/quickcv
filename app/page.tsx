@@ -7,8 +7,8 @@ import { PdfSection } from './clients/PdfSection';
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen  justify-between px-4 py-20 gap-4 h-content pb-4">
-      <div className='w-1/2 h-full'>
+    <main className="flex min-h-[200svh] sm:min-h-screen  justify-start sm:justify-center px-4 py-20 gap-4  pb-4 flex-col sm:flex-row">
+      <div className='w-full sm:w-1/2 h-full basis-2/5'>
         {/* a form that ask for name, gender date of birth , occupation, role, and social hanlde  */}
         <form className="flex flex-col items-center justify-center space-y-4 w-full">
           {
@@ -20,7 +20,7 @@ export default function Home() {
         </form>
       </div>
       {/* the output tab with bg color white */}
-      <PdfSection>
+      <PdfSection className="w-full sm:w-1/2 h-svh">
         # Heading One (H1)
       </PdfSection>
       

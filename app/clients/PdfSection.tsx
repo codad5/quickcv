@@ -1,11 +1,11 @@
 'use client';
-import { PrintableComponent } from "@/components/forms/pdf/Viewer";
 import { useRef, useState } from "react";
+import { PrintableComponent } from "@/components/forms/pdf/viewer";
 import { useReactToPrint } from "react-to-print";
 import Markdown from "react-markdown";
 import remarkGfm from 'remark-gfm'
 
-export function PdfSection({ children }: { children: string }) {
+export function PdfSection({ children, ...props }: { children: string } & React.HTMLAttributes<HTMLDivElement>) {
     const [viewRaw, setViewRaw] = useState(false);
     const [rawContent, setRawContent] = useState(children);
     const printableRef = useRef(null);
@@ -15,6 +15,7 @@ export function PdfSection({ children }: { children: string }) {
         content: () => printableRef.current,
         onBeforeGetContent: () => {
             setViewRaw(false);
+            syncContent();
         }
     });
 
@@ -29,18 +30,24 @@ export function PdfSection({ children }: { children: string }) {
         setViewRaw(!viewRaw);
     };
 
+    props.className = `w-1/2 p-1 text-green pt-6 ${props.className}`;
+
     return (
-        <div className="w-1/2 p-1 text-green pt-6">
-            <PrintableComponent ref={printableRef} className="w-full bg-white p-4 min-h-full h-full">
-                {
-                    viewRaw
-                        ?  <textarea
-                            ref={textareaRef}
-                            className="w-full h-auto border border-gray-300 rounded px-2 py-1 min-h-full"
-                            value={rawContent}
-                            onChange={syncContent}
-                        ></textarea> : <Markdown remarkPlugins={[remarkGfm]} className="prose lg:prose-prose prose-base prose-zinc sm:prose lg:prose-xs xl:prose-xs">{rawContent}</Markdown>
-                }
+        <div {...props}>
+            <PrintableComponent ref={printableRef} className="w-full bg-white p-4 min-h-full h-auto" >
+                <div className="w-full h-full flex justify-center py-4 text-left">
+                    {
+                        viewRaw
+                            ?  <textarea
+                                ref={textareaRef}
+                                className="w-full border border-gray-300 rounded px-2 py-1 min-h-[80svh] h-fit"
+                                value={rawContent}
+                                onChange={syncContent}
+                            ></textarea> : <Markdown remarkPlugins={[remarkGfm]} className="prose prose-sm prose-zinc w-full">
+                                {rawContent}
+                            </Markdown>
+                    }
+                </div>
             </PrintableComponent>
             <div className="w-full py-4 flex items-center justify-left space-x-4">
                 <button onClick={handlePrint} className="bg-green-500 text-white p-2 rounded">Print</button>
