@@ -3,6 +3,7 @@ import { PrintableComponent } from "@/components/forms/pdf/viewer";
 import { useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import Markdown from "react-markdown";
+import remarkGfm from 'remark-gfm'
 
 export function PdfSection({ children }: { children: string }) {
     const [viewRaw, setViewRaw] = useState(false);
@@ -38,7 +39,7 @@ export function PdfSection({ children }: { children: string }) {
                             className="w-full h-auto border border-gray-300 rounded px-2 py-1 min-h-full"
                             value={rawContent}
                             onChange={syncContent}
-                        ></textarea> : <Markdown>{rawContent}</Markdown>
+                        ></textarea> : <Markdown remarkPlugins={[remarkGfm]} className="prose lg:prose-prose prose-base prose-zinc sm:prose lg:prose-xs xl:prose-xs">{rawContent}</Markdown>
                 }
             </PrintableComponent>
             <div className="w-full py-4 flex items-center justify-left space-x-4">
