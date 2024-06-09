@@ -7,7 +7,7 @@ import { PdfSection } from './clients/PdfSection';
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen items-center justify-between px-4 py-20 gap-4 h-screen">
+    <main className="flex min-h-screen  justify-between px-4 py-20 gap-4 h-content pb-4">
       <div className='w-1/2 h-full'>
         {/* a form that ask for name, gender date of birth , occupation, role, and social hanlde  */}
         <form className="flex flex-col items-center justify-center space-y-4 w-full">

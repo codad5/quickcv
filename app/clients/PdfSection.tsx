@@ -13,7 +13,7 @@ export function PdfSection({ children }: { children: string }) {
     const handlePrint = useReactToPrint({
         content: () => printableRef.current,
         onBeforeGetContent: () => {
-            setViewRaw(!viewRaw);
+            setViewRaw(false);
         }
     });
 
@@ -29,13 +29,13 @@ export function PdfSection({ children }: { children: string }) {
     };
 
     return (
-        <div className="w-1/2 p-1 h-full text-green">
-            <PrintableComponent ref={printableRef} className="w-full bg-white p-4 min-h-full text-green">
+        <div className="w-1/2 p-1 text-green pt-6">
+            <PrintableComponent ref={printableRef} className="w-full bg-white p-4 min-h-full h-full">
                 {
                     viewRaw
                         ?  <textarea
                             ref={textareaRef}
-                            className="border p-2 w-full h-full"
+                            className="w-full h-auto border border-gray-300 rounded px-2 py-1 min-h-full"
                             value={rawContent}
                             onChange={syncContent}
                         ></textarea> : <Markdown>{rawContent}</Markdown>
