@@ -2,6 +2,7 @@ import {Input, TextArea} from '@/components/forms/inputs';
 import { fields } from './fields';
 import { LinkFields } from './clients/Extrafields';
 import { PdfSection } from './clients/PdfSection';
+import { useChat } from 'ai/react';
 
 
 
@@ -17,6 +18,7 @@ export default function Home() {
             })
           }
           <LinkFields />
+          <Input type="submit" value="Submit" className="bg-green-500 text-white p-2 rounded" />
         </form>
       </div>
       {/* the output tab with bg color white */}
