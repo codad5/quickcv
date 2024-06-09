@@ -20,7 +20,9 @@ export default function Home() {
         </form>
       </div>
       {/* the output tab with bg color white */}
-      <PdfSection />
+      <PdfSection>
+        # Heading One (H1)
+      </PdfSection>
       
     </main>
   );
