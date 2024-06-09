@@ -1,6 +1,7 @@
 import {Input, TextArea} from '@/components/forms/inputs';
 import { fields } from './fields';
 import { LinkFields } from './clients/Extrafields';
+import { PdfSection } from './clients/PdfSection';
 
 
 
@@ -18,6 +19,8 @@ export default function Home() {
           <LinkFields />
         </form>
       </div>
+      {/* the output tab with bg color white */}
+      <PdfSection />
       
     </main>
   );
