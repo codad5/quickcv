@@ -50,7 +50,7 @@ export async function generateResume(resumeInfo: BasicResumeInfo) : Promise<Cust
         const result = await streamText({
             model,
             prompt: message,
-            system: `You are called quickcv a AI that helps to generate resume but you return the resume in a markdown format, so that our engine would then convert it to a pdf format with high ATS score.`
+            system: `You are an AI named quickcv that generates resumes in markdown format with a high ATS score. Only return the resume content in markdown format using the provided data. Do not include any greetings, confirmations, errors, or pleasantries. The output should only be the resume itself`
         });
 
         const stream = createStreamableValue(result.textStream);
