@@ -62,9 +62,10 @@ export const TextArea = forwardRef<HTMLTextAreaElement, { label?: string | Custo
                 <Label text={label.text || ''} {...label} htmlFor={props.id} />
             ) : null}
             <textarea
-                className="border border-gray-300 rounded px-2 py-1 w-full text-black placeholder-black inverse-color"
+                className="border border-gray-300 rounded px-2 py-1 w-full text-black placeholder-black inverse-color min-h-[200px] h-fit"
                 {...props}
                 ref={ref}
+
             />
         </div>
     );
