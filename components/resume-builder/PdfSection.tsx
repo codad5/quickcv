@@ -1,11 +1,9 @@
 'use client';
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PrintableComponent } from "@/components/pdf/viewer";
 import { useReactToPrint } from "react-to-print";
 import Markdown from "react-markdown";
 import remarkGfm from 'remark-gfm'
-import { readStreamableValue } from "ai/rsc";
-import { BasicResumeInfo, generateResume } from "../../app/actions";
  
 
 export function PdfSection({ children, ...props }: { children: string } & React.HTMLAttributes<HTMLDivElement>) {
@@ -13,8 +11,6 @@ export function PdfSection({ children, ...props }: { children: string } & React.
     const [rawContent, setRawContent] = useState(children);
     const printableRef = useRef(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
-    // const { messages, input, handleInputChange, handleSubmit } = useChat();
-    const [weather, setWeather] = useState<ReactNode | null>(null);
 
     // use effect for detecting change in children
     useEffect(() => {
@@ -67,29 +63,6 @@ export function PdfSection({ children, ...props }: { children: string } & React.
                     {viewRaw ? 'View Formatted' : 'View Raw'}
                 </button>
             </div>
-             {/* <div>
-                 {weather}
-                <button
-                    onClick={async () => {
-                    const weatherUI = await getWeather();
-                    setWeather(weatherUI);
-                    }}
-                >
-                    What's the weather?
-                </button>
-                <button
-                onClick={async () => {
-                    const { status } = await runThread();
-
-                    for await (const value of readStreamableValue(status)) {
-                    console.log(value);
-                    }
-                }}
-                >
-                Ask
-                </button>
-
-            </div> */}
         </div>
     );
 }

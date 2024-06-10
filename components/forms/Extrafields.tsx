@@ -50,7 +50,7 @@ export function Fields({ name = "Other Fields", fields, allowed_type = 'text' , 
 }
 
 // Usage
-export function LinkFields({onChange}: {onChange?: (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => void}) {
+export function MultipleFields({onChange}: {onChange?: (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => void}) {
     return (
         <Fields fields={[{ name: "github", type: "url", placeholder: "Enter your GitHub URL", label: "GitHub" }]} allowed_type={'url'} name="Social Media" onChange={onChange} />
     );
