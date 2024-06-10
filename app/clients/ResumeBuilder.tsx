@@ -38,6 +38,7 @@ export default function ResumeBuilder() {
         try {
             console.log('submitting form')
             e.preventDefault();
+            if(!changeMade) throw new Error('No change made')
             if(generatingState) throw new Error("Task in place , please wait")
             if (!resumeInfo) throw new Error('No resume info provided');
             const message: BasicResumeInfo = {

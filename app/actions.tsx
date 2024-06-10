@@ -50,7 +50,7 @@ export async function generateResume(resumeInfo: BasicResumeInfo) : Promise<Cust
         const result = await streamText({
             model,
             prompt: message,
-            system: `You are an AI named quickcv that generates resumes in markdown format with a high ATS score. Only return the resume content in markdown format using the provided data. Do not include any greetings, confirmations, errors, or pleasantries. The output should only be the resume itself`
+            system: `You are an AI named quickcv that generates resumes in markdown format with a high ATS score. Only return the resume content in markdown format using the provided data. Do not include any greetings, confirmations, errors, or pleasantries. The output should only be the resume itself.`,
         });
 
         const stream = createStreamableValue(result.textStream);
@@ -71,6 +71,10 @@ export async function generateResume(resumeInfo: BasicResumeInfo) : Promise<Cust
 function generateResumeInfoMessage(resumeInfo: BasicResumeInfo) : string {
     let message = ``
     for (const key in resumeInfo) {
+
+        if (!resumeInfo[key] || resumeInfo[key] === '') {
+            continue;
+        }
         // if name start with i am or i'm {name}
         if (key === 'name') {
             message += `I am ${resumeInfo[key]}. `

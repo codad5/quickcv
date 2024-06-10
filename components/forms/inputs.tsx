@@ -10,7 +10,7 @@ export function Label({ text, ...props }: { text: string } & React.LabelHTMLAttr
 }
 
 // Input component with Tailwind CSS styling and label of type string or an object with all props available for a label
-export const Input = forwardRef<HTMLInputElement, { label?: string | CustomLabelProps; icon?: IconProps } & React.InputHTMLAttributes<HTMLInputElement>>(({ label, icon, ...props }, ref) => {
+export const Input = forwardRef<HTMLInputElement, { label?: string  |false | CustomLabelProps; icon?: IconProps } & React.InputHTMLAttributes<HTMLInputElement>>(({ label, icon, ...props }, ref) => {
     const renderIcon = (icon?: IconProps) => {
         if (!icon) return null;
         if (React.isValidElement(icon)) return icon;
@@ -23,6 +23,14 @@ export const Input = forwardRef<HTMLInputElement, { label?: string | CustomLabel
 
     const iconPosition = icon && typeof icon === 'object' && 'position' in icon ? icon.position : 'left';
     const DisplayIcon = renderIcon(icon);
+
+    if (!props.placeholder) {
+        props.placeholder = `Enter ${label?.toString().toLowerCase() || props.name || ''}`;
+    }
+
+    if (label !== false && props.name) {
+        label = label || props.name;
+    }
 
     return (
         <div className="flex flex-col w-full gap-2">
@@ -61,3 +69,14 @@ export const TextArea = forwardRef<HTMLTextAreaElement, { label?: string | Custo
         </div>
     );
 });
+
+
+export function ExperienceField({ ...props }: React.FormHTMLAttributes<HTMLFormElement>) {
+   
+    props.className = `w-full ${props.className}`;
+    return (
+        <form  {...props}>
+
+        </form>
+    );
+}
