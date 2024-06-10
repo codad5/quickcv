@@ -10,6 +10,7 @@ import { BasicResumeInfo, generateResume } from '../actions';
 export default function ResumeBuilder() {
     const [resumeInfo, setResumeInfo] = useState<BasicResumeInfo | null>(null);
     const [rawContent, setRawContent] = useState<string>("# Heading One (H1)")
+    const [generatingState, setGeneratingState] = useState(false)
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -32,6 +33,7 @@ export default function ResumeBuilder() {
         try {
             console.log('submitting form')
             e.preventDefault();
+            if(generatingState) throw new Error("Task in place , please wait")
             if (!resumeInfo) throw new Error('No resume info provided');
             const message: BasicResumeInfo = {
                 ...resumeInfo,
@@ -43,7 +45,7 @@ export default function ResumeBuilder() {
             // if message.name , role, email is empty or undefined return
             if (!message.name || !message.role || !message.email) throw new Error('Name, role and email are required');
             if (message.name === '' || message.role === '' || message.email === '')  throw new Error('Name, role and email are required');
-
+            setGeneratingState(true)
             const result = await generateResume(message);
             if (result.status === 'error') throw new Error(result.message);
             for await (const value of readStreamableValue(result.message)) {
@@ -51,8 +53,11 @@ export default function ResumeBuilder() {
                 if(!value) return;
                 setRawContent(value as string)
             }
+            
         }catch (error) {
             console.error(error)
+        }finally {
+            setGeneratingState(false)
         }
     }
     return (
@@ -66,7 +71,7 @@ export default function ResumeBuilder() {
                     })
                 }
                 <LinkFields onChange={handleSocalInputChange} />
-                <Input type="submit" value="Submit" className="bg-green-500 text-white p-2 rounded" />
+                <Input type="submit" value={`${generatingState ?  'Loading ' : 'Submit'}`} className={`${ generatingState ? 'bg-green-100' : 'bg-green-500'} text-white p-2 rounded`}/>
                 </form>
             </div>
             {/* the output tab with bg color white */}
