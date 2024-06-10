@@ -4,7 +4,7 @@ import { CustomFieldProp } from '../fields';
 import { Input, TextArea } from '@/components/forms/inputs';
 
 // Fields component
-export function Fields({ name = "Other Fields", fields, allowed_type = 'text' }: { name ?: String, fields: CustomFieldProp[], allowed_type?: CustomFieldProp['type'] }) {
+export function Fields({ name = "Other Fields", fields, allowed_type = 'text' , onChange}: { name ?: String, fields: CustomFieldProp[], allowed_type?: CustomFieldProp['type'] , onChange?: (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => void }) {
     const [customFields, setFields] = useState(fields);
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -33,9 +33,9 @@ export function Fields({ name = "Other Fields", fields, allowed_type = 'text' }:
             {customFields.map((field, index) => (
                 <div key={index} className="flex items-end w-full space-x-2">
                     {field.type !== 'textarea' ? (
-                        <Input {...field} />
+                        <Input {...field} onChange={onChange} />
                     ) : (
-                        <TextArea {...field} />
+                        <TextArea {...field} onChange={onChange} />
                     )}
                     <button onClick={() => removeField(index)} className="bg-red-500 text-white px-2 py-1 rounded" type="button">Remove</button>
                 </div>
@@ -50,8 +50,8 @@ export function Fields({ name = "Other Fields", fields, allowed_type = 'text' }:
 }
 
 // Usage
-export function LinkFields() {
+export function LinkFields({onChange}: {onChange?: (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => void}) {
     return (
-        <Fields fields={[{ name: "github", type: "url", placeholder: "Enter your GitHub URL", label: "GitHub" }]} allowed_type={'url'} name="Social Links" />
+        <Fields fields={[{ name: "github", type: "url", placeholder: "Enter your GitHub URL", label: "GitHub" }]} allowed_type={'url'} name="Social Links" onChange={onChange} />
     );
 }

@@ -11,22 +11,34 @@ export type CustomFieldProp = {
 };
 
 
+
 export const fields: CustomFieldProp[] = [
-        {
-            name: "name", 
-            placeholder: "John Doe",
-            label: "Name",
-        }, 
-        {
-            name: 'dob',
-            type: 'date',
-            label: 'Date of Birth',
-        }, 
-        {
-            name: 'email', 
-            type: 'email',
-            label: 'Email',
-        },
+    {
+        name: "name", 
+        placeholder: "John Doe",
+        label: "Name",
+    }, 
+    {
+        name: 'dob',
+        type: 'date',
+        label: 'Date of Birth',
+    }, 
+    {
+        name: 'email', 
+        type: 'email',
+        label: 'Email',
+    },
+    {
+        name: 'role',
+        placeholder: 'Software Engineer',
+        label: 'Role',
+    }, 
+    {
+        name: 'description',
+        type: 'textarea',
+        placeholder: 'A brief description about yourself',
+        label: 'Description',
+    }
 
     
 ]
