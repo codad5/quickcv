@@ -70,13 +70,3 @@ export const TextArea = forwardRef<HTMLTextAreaElement, { label?: string | Custo
     );
 });
 
-
-export function ExperienceField({ ...props }: React.FormHTMLAttributes<HTMLFormElement>) {
-   
-    props.className = `w-full ${props.className}`;
-    return (
-        <form  {...props}>
-
-        </form>
-    );
-}

@@ -10,8 +10,6 @@ export type CustomFieldProp = {
     icon?: IconProps
 };
 
-
-
 export const fields: CustomFieldProp[] = [
     {
         name: "name", 
@@ -32,6 +30,11 @@ export const fields: CustomFieldProp[] = [
         name: 'role',
         placeholder: 'Software Engineer',
         label: 'Role',
+    }, 
+    {
+        name: 'skills', 
+        placeholder: 'React, Node, TypeScript',
+        label: 'Skills (comma separated)',
     }, 
     {
         name: 'description',
