@@ -1,5 +1,5 @@
 
-import ResumeBuilder from './clients/ResumeBuilder';
+import ResumeBuilder from '../components/resume-builder/ResumeBuilder';
 
 
 

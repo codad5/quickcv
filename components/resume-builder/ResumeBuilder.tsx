@@ -1,11 +1,11 @@
 "use client";
-import { CustomFieldProp, fields } from '../fields';
+import { CustomFieldProp, fields } from '../../helpers/resume-builder/fields';
 import { Input, TextArea } from '@/components/forms/inputs';
 import { PdfSection } from './PdfSection';
-import { LinkFields } from './Extrafields';
+import { MultipleFields } from '../forms/Extrafields';
 import { readStreamableValue } from 'ai/rsc';
 import { useEffect, useState } from 'react';
-import { BasicResumeInfo, generateResume } from '../actions';
+import { BasicResumeInfo, generateResume } from '../../app/actions';
 
 export default function ResumeBuilder() {
     const [resumeInfo, setResumeInfo] = useState<BasicResumeInfo | null>(null);
@@ -77,7 +77,7 @@ export default function ResumeBuilder() {
                     return field?.type !== 'textarea' ? <Input key={index} {...field} onChange={handleInputChange} /> :  <TextArea key={index} {...field} onChange={handleInputChange} />
                     })
                 }
-                <LinkFields onChange={handleSocalInputChange} />
+                <MultipleFields onChange={handleSocalInputChange} />
                 <Input type="submit" value={`${generatingState ?  'Loading ' : 'Submit'}`} className={`${ generatingState ? 'bg-green-100' : 'bg-green-500'} text-white p-2 rounded`}/>
                 </form>
             </div>

@@ -3,7 +3,7 @@
 import { createStreamableValue } from 'ai/rsc';
 import { CoreMessage, streamText } from 'ai';
 import { createOpenAI, openai } from '@ai-sdk/openai';
-import { MODELS } from './clients/Models';
+import { MODELS } from '../helpers/Models';
 
 export type BasicResumeInfo = {
     name: string
