@@ -4,13 +4,18 @@ import { Input, TextArea } from '@/components/forms/inputs';
 import { PdfSection } from './PdfSection';
 import { LinkFields } from './Extrafields';
 import { readStreamableValue } from 'ai/rsc';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BasicResumeInfo, generateResume } from '../actions';
 
 export default function ResumeBuilder() {
     const [resumeInfo, setResumeInfo] = useState<BasicResumeInfo | null>(null);
     const [rawContent, setRawContent] = useState<string>("# Heading One (H1)")
     const [generatingState, setGeneratingState] = useState(false)
+    const [changeMade, setChangeMade] = useState(false)
+
+    useEffect(() => {
+        setChangeMade(true)
+    }, [resumeInfo])
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -58,6 +63,7 @@ export default function ResumeBuilder() {
             console.error(error)
         }finally {
             setGeneratingState(false)
+            setChangeMade(false)
         }
     }
     return (
