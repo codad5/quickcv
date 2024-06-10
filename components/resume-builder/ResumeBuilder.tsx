@@ -1,11 +1,11 @@
 "use client";
-import { CustomFieldProp, fields } from '../fields';
+import { CustomFieldProp, fields } from '../../helpers/resume-builder/fields';
 import { Input, TextArea } from '@/components/forms/inputs';
 import { PdfSection } from './PdfSection';
-import { LinkFields } from './Extrafields';
+import { LinkFields } from '../forms/Extrafields';
 import { readStreamableValue } from 'ai/rsc';
 import { useEffect, useState } from 'react';
-import { BasicResumeInfo, generateResume } from '../actions';
+import { BasicResumeInfo, generateResume } from '../../app/actions';
 
 export default function ResumeBuilder() {
     const [resumeInfo, setResumeInfo] = useState<BasicResumeInfo | null>(null);

@@ -1,6 +1,6 @@
 'use client';
 import { useRef, useState } from 'react';
-import { CustomFieldProp } from '../fields';
+import { CustomFieldProp } from '../../helpers/resume-builder/fields';
 import { Input, TextArea } from '@/components/forms/inputs';
 
 // Fields component

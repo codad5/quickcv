@@ -4,11 +4,9 @@ import { PrintableComponent } from "@/components/pdf/viewer";
 import { useReactToPrint } from "react-to-print";
 import Markdown from "react-markdown";
 import remarkGfm from 'remark-gfm'
-// import { useChat } from 'ai/react';
-import { getWeather, runThread } from "./TestStreamAbleUi";
 import { readStreamableValue } from "ai/rsc";
-import { BasicResumeInfo, generateResume } from "../actions";
-
+import { BasicResumeInfo, generateResume } from "../../app/actions";
+ 
 
 export function PdfSection({ children, ...props }: { children: string } & React.HTMLAttributes<HTMLDivElement>) {
     const [viewRaw, setViewRaw] = useState(false);
