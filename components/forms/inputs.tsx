@@ -47,7 +47,7 @@ export const Input = forwardRef<HTMLInputElement, { label?: string | CustomLabel
 // TextArea component
 export const TextArea = forwardRef<HTMLTextAreaElement, { label?: string | CustomLabelProps } & React.TextareaHTMLAttributes<HTMLTextAreaElement>>(({ label, ...props }, ref) => {
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full gap-2">
             {label && typeof label === 'string' ? (
                 <Label text={label} htmlFor={props.id} />
             ) : label && typeof label !== 'string' ? (
