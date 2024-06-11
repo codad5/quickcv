@@ -2,11 +2,8 @@
 
 import { createStreamableValue } from 'ai/rsc';
 import { streamText } from 'ai';
-import { streamText } from 'ai';
 import { createOpenAI, openai } from '@ai-sdk/openai';
 import { MODELS } from '../helpers/Models';
-import { headers } from 'next/headers';
-import { ResumeGeneratorLimiter } from '@/helpers/rate-limiter';
 import { headers } from 'next/headers';
 import { ResumeGeneratorLimiter } from '@/helpers/rate-limiter';
 
@@ -58,11 +55,6 @@ function getIp() {
 
 export async function generateResume(resumeInfo: BasicResumeInfo) : Promise<CustomResponse> {
     try {
-        const ip = getIp() ?? 'localhost'
-        const rl = await ResumeGeneratorLimiter.limit(ip)
-        if (!rl.success) {
-            throw new Error("You have exceeded the rate limit for this action. Please try again later.")
-        }
         const ip = getIp() ?? 'localhost'
         const rl = await ResumeGeneratorLimiter.limit(ip)
         if (!rl.success) {
