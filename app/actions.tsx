@@ -136,6 +136,10 @@ function generateResumeInfoMessage(resumeInfo: BasicResumeInfo) : string {
                 }
             }
         }
+
+        if (key === 'targetCompany') {
+            message += `I want this resume to be targeted at me getting a job at ${resumeInfo[key]}. `
+        }
     }
     return message;
 }

@@ -32,6 +32,11 @@ export const fields: CustomFieldProp[] = [
         label: 'Role',
     }, 
     {
+        name: 'targetCompany',
+        placeholder: 'Google',
+        label: 'Company (Targeted Company your resume is for)',
+    },
+    {
         name: 'skills', 
         placeholder: 'React, Node, TypeScript',
         label: 'Skills (comma separated)',
