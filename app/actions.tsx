@@ -1,9 +1,11 @@
 'use server';
 
 import { createStreamableValue } from 'ai/rsc';
-import { CoreMessage, streamText } from 'ai';
+import { streamText } from 'ai';
 import { createOpenAI, openai } from '@ai-sdk/openai';
 import { MODELS } from '../helpers/Models';
+import { headers } from 'next/headers';
+import { ResumeGeneratorLimiter } from '@/helpers/rate-limiter';
 
 export type BasicResumeInfo = {
     name: string
@@ -36,9 +38,28 @@ const groq = createOpenAI({
   apiKey: process.env.GROQ_API_KEY,
 });
 
+
+function getIp() {
+    let forwardFor = headers().get('x-forwarded-for')
+    let ip = headers().get('x-real-ip')
+
+    if (forwardFor) {
+        return forwardFor.split(',')[0].trim()
+    }
+    if (ip) {
+        return ip.trim()
+    }
+    return null
+}
+
+
 export async function generateResume(resumeInfo: BasicResumeInfo) : Promise<CustomResponse> {
     try {
-
+        const ip = getIp() ?? 'localhost'
+        const rl = await ResumeGeneratorLimiter.limit(ip)
+        if (!rl.success) {
+            throw new Error("You have exceeded the rate limit for this action. Please try again later.")
+        }
         const message = generateResumeInfoMessage(resumeInfo)
         const modelDefinition = MODELS.find(model => model.provider === 'groq');
         if (!modelDefinition) {
