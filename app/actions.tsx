@@ -71,7 +71,7 @@ export async function generateResume(resumeInfo: BasicResumeInfo) : Promise<Cust
         const result = await streamText({
             model,
             prompt: message,
-            system: `You are an AI named quickcv that generates resumes in markdown format with a high ATS score. Only return the resume content in markdown format using the provided data. Do not include any greetings, confirmations, errors, or pleasantries. The output should only be the resume itself.`,
+            system: `You are an AI named quickcv that generates resumes in markdown format with a high ATS score. Only return the resume content in markdown format using the provided data. Do not include any greetings, confirmations, errors, or pleasantries. The output should only be the resume itself. Also try quantifying the resume with numbers and percentages where possible and if enough data is provided. Use the best verbs and adjectives to describe the person's skills and achievements. The resume should be targeted at the role and company provided in the data. Also try to make use of bullet points and lists where possible. Avoid using any personal pronouns and too much repetition.`
         });
 
         const stream = createStreamableValue(result.textStream);
@@ -93,7 +93,7 @@ function generateResumeInfoMessage(resumeInfo: BasicResumeInfo) : string {
     let message = ``
     for (const key in resumeInfo) {
 
-        if (!resumeInfo[key] || resumeInfo[key] === '') {
+        if (!resumeInfo[key] || resumeInfo[key].toString().trim() === '') {
             continue;
         }
         // if name start with i am or i'm {name}
