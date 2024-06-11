@@ -93,7 +93,7 @@ function generateResumeInfoMessage(resumeInfo: BasicResumeInfo) : string {
     let message = ``
     for (const key in resumeInfo) {
 
-        if (!resumeInfo[key] || resumeInfo[key].toString().trim() === '') {
+        if (!resumeInfo[key] || resumeInfo[key]?.toString().trim() === '') {
             continue;
         }
         // if name start with i am or i'm {name}
