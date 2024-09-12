@@ -176,19 +176,19 @@ export function EducationFields({
       options: ["BSc", "MSc", "PhD"],
     },
     {
-      name: "institution",
+      name: "school",
       type: "text",
       placeholder: "Enter your institution",
       label: "Institution",
     },
     {
-      name: "start",
+      name: "startYear",
       type: "date",
       placeholder: "Enter start date",
       label: "Start Date",
     },
     {
-      name: "end",
+      name: "endYear",
       type: "date",
       placeholder: "Enter end date",
       label: "End Date",

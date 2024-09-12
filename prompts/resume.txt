@@ -33,7 +33,10 @@ You are an AI named QuickCV that generates ATS-optimized resumes in markdown for
 
 PHP Developer
 
-Lagos, Nigeria | [Portfolio](https://codad5.me) | aniezeoformic@gmail.com | [GitHub](https://github.com/codad5) | [Twitter](https://x.com/codad5_)
+(Location if given) | [Portfolio](https://portfolio.com) | someone@domain.com | [GitHub](https://github.com/xxxxxx) | [Twitter](https://x.com/xxxxxx)
+
+## Summary
+A PHP developer with experience in developing WordPress plugins and integrating APIs. Proficient in Laravel, Express.js, and API integration. Passionate about writing clean, efficient, and well-documented code.
 
 ## Technical Proficiencies
 - Languages: PHP, Node.js, JavaScript, TypeScript, Rust
@@ -42,21 +45,21 @@ Lagos, Nigeria | [Portfolio](https://codad5.me) | aniezeoformic@gmail.com | [Git
 - Other: WordPress, SSR, API Integration
 
 ## Professional Experience
-### PHP Developer, Cyberinfomatic (20th March 2024 – Present)
+### PHP Developer, SomeComapny (20th March 2024 – Present)
 - Developed a Crypto Plugin for displaying crypto information on WordPress
 - Designed a licensing system for the pro version of the plugin and later ported it to Freemius for easier integration and reduced development time
 - Worked with CoinGecko, OpenExchange, Kraken, and Binance APIs for displaying data and integrated Kraken and Binance for webhook and real-time data updates
 
-### PHP Developer, Fusion Intelligence (18th October 2023 – 10th February 2024)
+### Node Developer, Popular Company (18th October 2023 – 10th February 2024)
 - Developed a WordPress plugin for a cinema product, making it adaptable to UI/theme
 - Used SSR to hide the client API key and product URL from the frontend
 - Implemented WordPress JSON/API to route all requests from the frontend to the main server and send responses back
 
-### Backend Developer, Appsthathelps (15th June 2023 – 20th December 2023)
+### Backend Developer, Apple (15th June 2023 – 20th December 2023)
 - Developed APIs for various mobile applications, including a sports betting stat API and a fashion/style app API
 - Built using Laravel and MySQL, integrated to serve different apps on the app store/play store
 - Achieved over 150k total requests in a month at peak
 
 ## Education
-BSc, Institution Name (Graduation Year)
+BSc, Institution Name (Graduation Year}Graduation Period| Graduation Status)
 - Relevant skills or coursework
