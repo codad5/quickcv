@@ -2,10 +2,12 @@
 import { CustomFieldProp, fields } from '../../helpers/resume-builder/fields';
 import { Input, TextArea } from '@/components/forms/inputs';
 import { PdfSection } from './PdfSection';
-import { MultipleFields } from '../forms/Extrafields';
+import { EducationFields, SocialMultipleFields } from '../forms/Extrafields';
 import { readStreamableValue } from 'ai/rsc';
 import { useEffect, useState } from 'react';
-import { BasicResumeInfo, generateResume } from '../../app/actions';
+import { BasicResumeInfo, Education, generateResume } from '../../app/actions';
+
+
 
 export default function ResumeBuilder() {
     const [resumeInfo, setResumeInfo] = useState<BasicResumeInfo | null>(null);
@@ -33,6 +35,10 @@ export default function ResumeBuilder() {
         console.log(name, value, resumeInfo , 'name and value from input change')
         setResumeInfo((prev) => ({ ...prev, social: { ...prev?.social, [name]: value } } as BasicResumeInfo))
     }
+
+    const handleEducationChange = (educationData: Education[]) => {
+      console.log(educationData, 'education data')
+    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         try {
@@ -68,23 +74,38 @@ export default function ResumeBuilder() {
         }
     }
     return (
-        <>
-            <div className='w-full sm:w-1/2 h-full basis-2/5'>
-                {/* a form that ask for name, gender date of birth , occupation, role, and social hanlde  */}
-                <form className="flex flex-col items-center justify-center space-y-4 w-full" onSubmit={handleSubmit}>
-                {
-                    fields.map((field, index) => {
-                    return field?.type !== 'textarea' ? <Input key={index} {...field} onChange={handleInputChange} /> :  <TextArea key={index} {...field} onChange={handleInputChange} />
-                    })
-                }
-                <MultipleFields onChange={handleSocalInputChange} />
-                <Input type="submit" value={`${generatingState ?  'Loading ' : 'Submit'}`} className={`${ generatingState ? 'bg-green-100' : 'bg-green-500'} text-white p-2 rounded`}/>
-                </form>
+      <>
+        <div className="w-full sm:w-1/2 h-full basis-2/5">
+          {/* a form that ask for name, gender date of birth , occupation, role, and social hanlde  */}
+          <form
+            className="flex flex-col items-center justify-center space-y-4 w-full"
+            onSubmit={handleSubmit}
+          >
+            {fields.map((field, index) => {
+              return field?.type !== "textarea" ? (
+                <Input key={index} {...field} onChange={handleInputChange} />
+              ) : (
+                <TextArea key={index} {...field} onChange={handleInputChange} />
+              );
+            })}
+            <SocialMultipleFields onChange={handleSocalInputChange} />
+
+            <div className="mb-4">
+              <h2 className="text-xl font-semibold mb-2">Education</h2>
+              <EducationFields onChange={handleEducationChange} />
             </div>
-            {/* the output tab with bg color white */}
-            <PdfSection className="w-full sm:w-1/2 h-svh">
-                {rawContent}
-            </PdfSection>
-        </>
-    )
+                    
+            <Input
+              type="submit"
+              value={`${generatingState ? "Loading " : "Submit"}`}
+              className={`${
+                generatingState ? "bg-green-100" : "bg-green-500"
+              } text-white p-2 rounded`}
+            />
+          </form>
+        </div>
+        {/* the output tab with bg color white */}
+        <PdfSection className="w-full sm:w-1/2 h-svh">{rawContent}</PdfSection>
+      </>
+    );
 }

@@ -8,26 +8,29 @@ import { headers } from 'next/headers';
 import { ResumeGeneratorLimiter } from '@/helpers/rate-limiter';
 import { getIp } from '@/helpers/commons/server';
 
+
+export type Education = {
+  degree: string;
+  school: string;
+  startYear?: string;
+  endYear?: string;
+  description?: string;
+};
+
 export type BasicResumeInfo = {
-    name: string
-    email : string
-    role: string
-    description?: string
-    dob?: string
-    social?: {
-        linkedin?: string
-        github?: string
-        [key: string]: string | undefined
-    }
-    education?: {
-        degree: string
-        school: string
-        startYear?: string
-        endYear?: string
-        description?: string
-    }[]
-    [key: string]: string | object | undefined
-}
+  name: string;
+  email: string;
+  role: string;
+  description?: string;
+  dob?: string;
+  social?: {
+    linkedin?: string;
+    github?: string;
+    [key: string]: string | undefined;
+  };
+  education?: Education[];
+  [key: string]: string | object | undefined;
+};
 
 export type CustomResponse = {
     status: "error" | "success"
