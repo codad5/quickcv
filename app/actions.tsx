@@ -80,9 +80,6 @@ export async function generateResume(
       process.env.RESUME_SYSTEM_PROMPT ?? 'resume.txt'
     );
     const systemPrompt = await fs.readFile(promptFilePath, "utf-8");
-    
-    console.log(systemPrompt);
-
     const result = await streamText({
       model,
       prompt: message,
@@ -125,15 +122,19 @@ function generateResumeInfoMessage(resumeInfo: BasicResumeInfo): string {
       case "dob":
         message += `I was born on ${value}. `;
         break;
+      
+        case "location":
+            message += `I am located in ${value}. `;
+        break;
 
       case "social":
-        message += `You can find my social profiles: ${JSON.stringify(
+        message += `You can find my social profiles platforms url(or username): ${JSON.stringify(
           value
         )}. `;
         break;
 
       case "description":
-        message += `${value}. `;
+        message += `Here is a brief description about me: ${value}. `;
         break;
 
       case "education":

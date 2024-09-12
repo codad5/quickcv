@@ -54,6 +54,7 @@ function MultipleGroupFields<T>({
 }: FieldProps<T>) {
   const [groupData, setGroupData] = useState<T[]>(defaultValues);
   const [currentData, setCurrentData] = useState<T>({} as T);
+  const [errors, setErrors] = useState<string[]>([]);
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -64,11 +65,25 @@ function MultipleGroupFields<T>({
     setCurrentData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  const validateGroupData = () => {
+    const newErrors: string[] = [];
+    fields.forEach((field) => {
+      if (field.required && !currentData[field.name as keyof T]) {
+        newErrors.push(`${field.label} is required.`);
+      }
+    });
+    setErrors(newErrors);
+    return newErrors.length === 0;
+  };
+
   const addGroup = () => {
-    setGroupData((prevData) => [...prevData, currentData]);
-    setCurrentData({} as T);
-    if (onChange) {
-      onChange([...groupData, currentData]);
+    if (validateGroupData()) {
+      setGroupData((prevData) => [...prevData, currentData]);
+      setCurrentData({} as T);
+      if (onChange) {
+        onChange([...groupData, currentData]);
+      }
+      setErrors([]);
     }
   };
 
@@ -81,14 +96,18 @@ function MultipleGroupFields<T>({
   };
 
   const renderField = (field: GroupField) => {
+    const value = (currentData as any)[field.name] || "";
+    const isRequired = field.required ? "required" : "";
+    delete field.required;
+
     switch (field.type) {
       case "select":
         return (
           <select
             name={field.name}
             onChange={handleInputChange}
-            value={(currentData as any)[field.name] || ""}
-            className="w-full p-2 border rounded"
+            value={value}
+            className={`w-full p-2 border rounded ${isRequired}`}
           >
             <option value="">{field.placeholder}</option>
             {field.options?.map((option, i) => (
@@ -105,16 +124,18 @@ function MultipleGroupFields<T>({
         return (
           <TextArea
             {...field}
-            value={(currentData as any)[field.name] || ""}
+            value={value}
             onChange={handleInputChange}
+            className={isRequired}
           />
         );
       default:
         return (
           <Input
             {...field}
-            value={(currentData as any)[field.name] || ""}
+            value={value}
             onChange={handleInputChange}
+            className={isRequired}
           />
         );
     }
@@ -123,6 +144,15 @@ function MultipleGroupFields<T>({
   return (
     <div className="flex flex-col items-center justify-center space-y-4 w-full">
       <h2 className="text-lg font-semibold text-left w-full">{name}</h2>
+
+      {/* Display error messages */}
+      {errors.length > 0 && (
+        <div className="text-red-500 mb-4">
+          {errors.map((error, index) => (
+            <p key={index}>{error}</p>
+          ))}
+        </div>
+      )}
 
       {/* Input fields for new group */}
       {fields.map((field, index) => (
@@ -173,6 +203,7 @@ export function EducationFields({
       type: "select",
       placeholder: "Select your degree",
       label: "Degree",
+      required: true,
       options: ["BSc", "MSc", "PhD"],
     },
     {
@@ -180,6 +211,7 @@ export function EducationFields({
       type: "text",
       placeholder: "Enter your institution",
       label: "Institution",
+      required: true,
     },
     {
       name: "startYear",
@@ -223,6 +255,7 @@ export function ExperienceFields({
       type: "text",
       placeholder: "Enter your position",
       label: "Position",
+      required: true,
     },
     {
       name: "startDate",
@@ -266,12 +299,14 @@ export function SocialMultipleFields({
       type: "text",
       placeholder: "Enter social media platform",
       label: "Platform",
+      required: true,
     },
     {
       name: "url",
-      type: "url",
-      placeholder: "Enter your profile URL",
-      label: "URL",
+      type: "text",
+      placeholder: "Enter your profile URL or handle",
+      label: "URL (or handle)",
+      required: true,
     },
   ];
   return (

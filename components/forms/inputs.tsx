@@ -43,8 +43,8 @@ export const Input = forwardRef<HTMLInputElement, { label?: string  |false | Cus
                 {DisplayIcon && <span className="flex items-center justify-center px-2">{DisplayIcon}</span>}
                 <input
                     type={props.type}
-                    className="border border-gray-300 rounded px-2 py-1 text-black placeholder-black inverse-color flex-grow"
                     {...props}
+                    className={`border border-gray-300 rounded px-2 py-1 text-black placeholder-black inverse-color flex-grow ${props.className}`}
                     ref={ref}
                 />
             </div>
@@ -62,8 +62,8 @@ export const TextArea = forwardRef<HTMLTextAreaElement, { label?: string | Custo
                 <Label text={label.text || ''} {...label} htmlFor={props.id} />
             ) : null}
             <textarea
-                className="border border-gray-300 rounded px-2 py-1 w-full text-black placeholder-black inverse-color min-h-[200px] h-fit"
                 {...props}
+                className={`border border-gray-300 rounded px-2 py-1 w-full text-black placeholder-black inverse-color min-h-[200px] h-fit ${props.className}`}
                 ref={ref}
 
             />
