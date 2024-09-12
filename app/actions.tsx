@@ -1,13 +1,14 @@
-'use server';
+"use server";
 
-import { createStreamableValue } from 'ai/rsc';
-import { streamText } from 'ai';
-import { createOpenAI, openai } from '@ai-sdk/openai';
-import { MODELS } from '../helpers/Models';
-import { headers } from 'next/headers';
-import { ResumeGeneratorLimiter } from '@/helpers/rate-limiter';
-import { getIp } from '@/helpers/commons/server';
-
+import { createStreamableValue } from "ai/rsc";
+import { streamText } from "ai";
+import { createOpenAI, openai } from "@ai-sdk/openai";
+import { MODELS } from "../helpers/Models";
+import { headers } from "next/headers";
+import { ResumeGeneratorLimiter } from "@/helpers/rate-limiter";
+import { getIp } from "@/helpers/commons/server";
+import path from "path";
+import { promises as fs } from "fs";
 
 export type Education = {
   degree: string;
@@ -25,123 +26,151 @@ export type Experience = {
   description: string;
 };
 
+export type Social = {
+    platform: string;
+    url: string;
+};
+
 export type BasicResumeInfo = {
   name: string;
   email: string;
   role: string;
   description?: string;
   dob?: string;
-  social?: {
-    linkedin?: string;
-    github?: string;
-    [key: string]: string | undefined;
- };
- education?: Education[];
- experience?: Experience[];
+  social?: Social[];
+  education?: Education[];
+  experience?: Experience[];
   [key: string]: string | object | undefined;
 };
 
 export type CustomResponse = {
-    status: "error" | "success"
-    message: any
-}
+  status: "error" | "success";
+  message: any;
+};
 
 const groq = createOpenAI({
   baseURL: "https://api.groq.com/openai/v1",
   apiKey: process.env.GROQ_API_KEY,
 });
 
-
-
-
-
-export async function generateResume(resumeInfo: BasicResumeInfo) : Promise<CustomResponse> {
-    try {
-        const ip = getIp() ?? 'localhost'
-        const rl = await ResumeGeneratorLimiter.limit(ip)
-        if (!rl.success) {
-            throw new Error("You have exceeded the rate limit for this action. Please try again later.")
-        }
-        const message = generateResumeInfoMessage(resumeInfo)
-        const modelDefinition = MODELS.find(model => model.provider === 'groq');
-        if (!modelDefinition) {
-            throw new Error("Model not found for groq")
-        }
-        const modelProvider = modelDefinition.provider === "groq" ? groq : openai;
-        const model = modelProvider(modelDefinition.id);
-        console.log(message)
-        const result = await streamText({
-            model,
-            prompt: message,
-            system: `You are an AI named quickcv that generates resumes in markdown format with a high ATS score. Only return the resume content in markdown format using the provided data. Do not include any greetings, confirmations, errors, or pleasantries. The output should only be the resume itself. Also try quantifying the resume with numbers and percentages where possible and if enough data is provided. Use the best verbs and adjectives to describe the person's skills and achievements. The resume should be targeted at the role and company provided in the data. Also try to make use of bullet points and lists where possible. Avoid using any personal pronouns and too much repetition.`
-        });
-
-        const stream = createStreamableValue(result.textStream);
-        return {
-            status: "success",
-            message: stream.value
-        }
-    } catch (error) {
-        console.error(error)
-        return {
-            status: "error",
-            message: (error as Error).message
-        }
+export async function generateResume(
+  resumeInfo: BasicResumeInfo
+): Promise<CustomResponse> {
+  try {
+    const ip = getIp() ?? "localhost";
+    const rl = await ResumeGeneratorLimiter.limit(ip);
+    if (!rl.success) {
+      throw new Error(
+        "You have exceeded the rate limit for this action. Please try again later."
+      );
     }
+
+    const message = generateResumeInfoMessage(resumeInfo);
+    const modelDefinition = MODELS.find((model) => model.provider === "groq");
+    if (!modelDefinition) {
+      throw new Error("Model not found for groq");
+    }
+    const modelProvider = modelDefinition.provider === "groq" ? groq : openai;
+    const model = modelProvider(modelDefinition.id);
+
+    console.log(message);
+    const promptFilePath = path.join(
+      process.cwd(),
+      "prompts",
+      process.env.RESUME_SYSTEM_PROMPT ?? 'resume.txt'
+    );
+    const systemPrompt = await fs.readFile(promptFilePath, "utf-8");
+    
+    console.log(systemPrompt);
+
+    const result = await streamText({
+      model,
+      prompt: message,
+      system: systemPrompt,
+    });
+
+    const stream = createStreamableValue(result.textStream);
+    return {
+      status: "success",
+      message: stream.value,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      status: "error",
+      message: (error as Error).message,
+    };
+  }
 }
 
+function generateResumeInfoMessage(resumeInfo: BasicResumeInfo): string {
+  let message = "";
 
-function generateResumeInfoMessage(resumeInfo: BasicResumeInfo) : string {
-    let message = ``
-    for (const key in resumeInfo) {
-
-        if (!resumeInfo[key] || resumeInfo[key]?.toString().trim() === '') {
-            continue;
-        }
-        // if name start with i am or i'm {name}
-        if (key === 'name') {
-            message += `I am ${resumeInfo[key]}. `
-        }
-        // if email and my email is {email}
-        if (key === 'email') {
-            message += `My email is ${resumeInfo[key]}. `
-        }
-        // for date of birth
-        if (key === 'dob') {
-            message += `I was born on ${resumeInfo[key]}. `
-        }
-        // if socials are present add them by stringifying the object
-        if (key === 'social') {
-            message += `I can be found on ${JSON.stringify(resumeInfo[key])}. `
-        }
-        // for role
-        if (key === 'role') {
-            message += `I am a ${resumeInfo[key]}. `
-        }
-        // for description
-        if (key === 'description') {
-            message += `${resumeInfo[key]}. `
-        }
-        // for education
-        if (key === 'education') {
-            message += `Here is my educational background. `
-            for (const edu of (resumeInfo['education'] ?? [])) {
-                message += `I have a ${edu.degree} from ${edu.school}. `
-                if (edu.startYear ) {
-                    message += `I started in ${edu.startYear}. `
-                }
-                if (edu.endYear) {
-                    message += `and finished in ${edu.endYear}. `
-                }
-                if (edu.description) {
-                    message += `${edu.description}. `
-                }
-            }
-        }
-
-        if (key === 'targetCompany') {
-            message += `I want this resume to be targeted at me getting a job at ${resumeInfo[key]}. `
-        }
+  // Use switch case to handle different keys
+  for (const key in resumeInfo) {
+    const value = resumeInfo[key];
+    if (!value || value.toString().trim() === "") {
+      continue;
     }
-    return message;
+
+    switch (key) {
+      case "name":
+        message += `I am ${value}. `;
+        break;
+
+      case "email":
+        message += `My email is ${value}. `;
+        break;
+
+      case "dob":
+        message += `I was born on ${value}. `;
+        break;
+
+      case "social":
+        message += `You can find my social profiles: ${JSON.stringify(
+          value
+        )}. `;
+        break;
+
+      case "description":
+        message += `${value}. `;
+        break;
+
+      case "education":
+        message += `Here is my educational background: `;
+        (value as Education[]).forEach((edu) => {
+          message += `I have a ${edu.degree} from ${edu.school}. `;
+          if (edu.startYear) message += `I started in ${edu.startYear}. `;
+          if (edu.endYear) message += `and finished in ${edu.endYear}. `;
+          if (edu.description) message += `${edu.description}. `;
+        });
+        break;
+
+      case "experience":
+        message += `I have experience working at the following companies: `;
+        (value as Experience[]).forEach((exp) => {
+          message += `I worked at ${exp.company} as a ${exp.position} from ${exp.startDate} to ${exp.endDate}. `;
+          if (exp.description)
+            message += `My responsibilities included: ${exp.description}. `;
+        });
+        break;
+
+      case "role":
+        message += `This resume is for the role of ${value}. `;
+        break;
+
+      case "targetCompany":
+        message += `I want this resume to be tailored for a position at ${value}. `;
+        break;
+
+      default:
+        // Stringify and add any other unhandled keys
+        message += `For this key "${key}", here is my info: ${JSON.stringify(
+          value
+        )}. `;
+        break;
+    }
+  }
+
+  return message;
 }

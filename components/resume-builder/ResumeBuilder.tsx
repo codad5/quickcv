@@ -28,19 +28,18 @@ export default function ResumeBuilder() {
         // setRawContent("# Heading One (H2")
     }
 
-    const handleSocalInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        if(!name || !value) return;
-        if (value === '') return;
-        console.log(name, value, resumeInfo , 'name and value from input change')
-        setResumeInfo((prev) => ({ ...prev, social: { ...prev?.social, [name]: value } } as BasicResumeInfo))
+    const handleSocalInputChange = (data: any) => {
+        console.log(data)
+        setResumeInfo((prev) => ({ ...prev, social: data } as BasicResumeInfo));
     }
 
     const handleEducationChange = (educationData: Education[]) => {
       console.log(educationData, 'education data')
+      setResumeInfo((prev) => ({ ...prev, education: educationData } as BasicResumeInfo))
     };
     const handleExperienceChange = (educationData: Experience[]) => {
       console.log(educationData, "education data");
+      setResumeInfo((prev) => ({ ...prev, experience: educationData } as BasicResumeInfo))
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -91,7 +90,9 @@ export default function ResumeBuilder() {
                 <TextArea key={index} {...field} onChange={handleInputChange} />
               );
             })}
-            <SocialMultipleFields onChange={handleSocalInputChange} />
+            <SocialMultipleFields
+              onChange={handleSocalInputChange}
+            />
 
             <div className="mb-4">
               <h2 className="text-xl font-semibold mb-2">Education</h2>
