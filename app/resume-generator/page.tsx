@@ -1,15 +1,10 @@
+import CreditUsage from "@/components/commons/CreditUsage";
 import ResumeBuilder from "@/components/resume-builder/ResumeBuilder";
 import { getIp } from "@/helpers/commons/server";
 import { ResumeGeneratorLimiter } from "@/helpers/rate-limiter";
 
 
-async function CreditUsage({remains, max}:{remains:number, max:number}) {
-    return (
-      <div className="p-2 aspect-video">
-        Credit Count : {remains}/{max}
-      </div>
-    );
-}
+
 
 export default async function Home() {
     const MAX_CREDIT = parseInt(process.env.QUICK_CV_RATE_LIMIT ?? "20");
