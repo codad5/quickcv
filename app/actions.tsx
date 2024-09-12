@@ -101,7 +101,7 @@ export async function generateResume(
 }
 
 function generateResumeInfoMessage(resumeInfo: BasicResumeInfo): string {
-  let message = "";
+  let message = "Today`s Date is: " + new Date().toDateString() + ". ";
 
   // Use switch case to handle different keys
   for (const key in resumeInfo) {

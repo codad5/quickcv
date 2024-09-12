@@ -39,7 +39,7 @@ PHP Developer
 ## Summary
 A PHP developer with experience in developing WordPress plugins and integrating APIs. Proficient in Laravel, Express.js, and API integration. Passionate about writing clean, efficient, and well-documented code.
 
-## Technical Proficiencies (if provided)
+## Technical Proficiencies (or `## skills` depending on what suite the career ) (if provided)
 - Languages: PHP, Node.js, JavaScript, TypeScript, Rust
 - Frameworks: Laravel, Express.js, Tauri
 - Tools: MySQL, MongoDB, Redis
