@@ -17,6 +17,14 @@ export type Education = {
   description?: string;
 };
 
+export type Experience = {
+  company: string;
+  position: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+};
+
 export type BasicResumeInfo = {
   name: string;
   email: string;
@@ -27,8 +35,9 @@ export type BasicResumeInfo = {
     linkedin?: string;
     github?: string;
     [key: string]: string | undefined;
-  };
-  education?: Education[];
+ };
+ education?: Education[];
+ experience?: Experience[];
   [key: string]: string | object | undefined;
 };
 

@@ -2,7 +2,7 @@
 import { useRef, useState } from "react";
 import { CustomFieldProp } from "../../helpers/resume-builder/fields";
 import { Input, TextArea } from "@/components/forms/inputs";
-import { Education } from "@/app/actions";
+import { Education, Experience } from "@/app/actions";
 
 // Fields component
 export function Fields({
@@ -259,6 +259,54 @@ export function EducationFields({
     <MultipleGroupFields<Education>
       fields={fields}
       name="Education"
+      onChange={onChange}
+    />
+  );
+}
+
+
+
+export function ExperienceFields({
+  onChange,
+}: {
+  onChange?: (data: Experience[]) => void;
+}) {
+  const fields: GroupField[] = [
+    {
+      name: "company",
+      type: "text",
+      placeholder: "Enter company name",
+      label: "Company",
+    },
+    {
+      name: "position",
+      type: "text",
+      placeholder: "Enter your position",
+      label: "Position",
+    },
+    {
+      name: "startDate",
+      type: "date",
+      placeholder: "Enter start date",
+      label: "Start Date",
+    },
+    {
+      name: "endDate",
+      type: "date",
+      placeholder: "Enter end date",
+      label: "End Date",
+    },
+    {
+      name: "description",
+      type: "textarea",
+      placeholder: "Describe your responsibilities and achievements",
+      label: "Description",
+    },
+  ];
+  return (
+    <MultipleGroupFields<Experience>
+      fields={fields}
+      name="Experience"
       onChange={onChange}
     />
   );

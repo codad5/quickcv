@@ -2,10 +2,10 @@
 import { CustomFieldProp, fields } from '../../helpers/resume-builder/fields';
 import { Input, TextArea } from '@/components/forms/inputs';
 import { PdfSection } from './PdfSection';
-import { EducationFields, SocialMultipleFields } from '../forms/Extrafields';
+import { EducationFields, ExperienceFields, SocialMultipleFields } from '../forms/Extrafields';
 import { readStreamableValue } from 'ai/rsc';
 import { useEffect, useState } from 'react';
-import { BasicResumeInfo, Education, generateResume } from '../../app/actions';
+import { BasicResumeInfo, Education, Experience, generateResume } from '../../app/actions';
 
 
 
@@ -38,6 +38,9 @@ export default function ResumeBuilder() {
 
     const handleEducationChange = (educationData: Education[]) => {
       console.log(educationData, 'education data')
+    };
+    const handleExperienceChange = (educationData: Experience[]) => {
+      console.log(educationData, "education data");
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -94,7 +97,12 @@ export default function ResumeBuilder() {
               <h2 className="text-xl font-semibold mb-2">Education</h2>
               <EducationFields onChange={handleEducationChange} />
             </div>
-                    
+
+            <div className="mb-4">
+              <h2 className="text-xl font-semibold mb-2">Work Experience</h2>
+              <ExperienceFields onChange={handleExperienceChange} />
+            </div>
+
             <Input
               type="submit"
               value={`${generatingState ? "Loading " : "Submit"}`}
