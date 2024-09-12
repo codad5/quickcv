@@ -6,6 +6,7 @@ import { createOpenAI, openai } from '@ai-sdk/openai';
 import { MODELS } from '../helpers/Models';
 import { headers } from 'next/headers';
 import { ResumeGeneratorLimiter } from '@/helpers/rate-limiter';
+import { getIp } from '@/helpers/commons/server';
 
 export type BasicResumeInfo = {
     name: string
@@ -39,18 +40,7 @@ const groq = createOpenAI({
 });
 
 
-function getIp() {
-    let forwardFor = headers().get('x-forwarded-for')
-    let ip = headers().get('x-real-ip')
 
-    if (forwardFor) {
-        return forwardFor.split(',')[0].trim()
-    }
-    if (ip) {
-        return ip.trim()
-    }
-    return null
-}
 
 
 export async function generateResume(resumeInfo: BasicResumeInfo) : Promise<CustomResponse> {

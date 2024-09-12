@@ -1,8 +1,8 @@
 import { Redis as UpstachRedis } from '@upstash/redis'
 
 const Redis = new UpstachRedis({
-  url: 'https://closing-marlin-43483.upstash.io',
-  token: 'AanbAAIncDExNmQ2NTlhODIxNDU0MTFiOWYyZDhlODRlNGVmMGRhZnAxNDM0ODM',
+  url: process.env.UPSTACH_REDIS_URL,
+  token: process.env.UPSTASH_REDIS_PASSWORD
 })
 
 export default Redis
