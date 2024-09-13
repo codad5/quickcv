@@ -181,7 +181,7 @@ function generateResumeInfoMessage(resumeInfo: BasicResumeInfo): string {
         break;
       
       case "projects":
-        message += `Here are some projects I have worked on: `;
+        message += `Here are some projects I have worked on (some personal or with a team): `;
         (value as Project[]).forEach((project) => {
           message += `I worked on a project titled ${project.title} `;
           if (project.skills) message += `using the following skills: (${project.skills}), `;
