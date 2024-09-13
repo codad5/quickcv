@@ -6,7 +6,7 @@ import { EducationFields, ExperienceFields, SocialMultipleFields } from '../form
 import { readStreamableValue } from 'ai/rsc';
 import { useEffect, useState } from 'react';
 import { BasicResumeInfo, Education, Experience, generateResume } from '../../app/actions';
-import { decrementCreditEvent } from '@/helpers/commons/client';
+import { APPToRemember, decrementCreditEvent } from '@/helpers/commons/client';
 
 
 
@@ -15,10 +15,37 @@ export default function ResumeBuilder() {
     const [rawContent, setRawContent] = useState<string>("# Heading One (H1)")
     const [generatingState, setGeneratingState] = useState(false)
     const [changeMade, setChangeMade] = useState(false)
+    const [rememberMe, setRememberMe] = useState(true)
 
     useEffect(() => {
         setChangeMade(true)
     }, [resumeInfo])
+    
+    useEffect(() => {
+      const resumeInfo = localStorage.getItem("quickcv:resumeInfo");
+      if (resumeInfo) {
+        setResumeInfo(JSON.parse(resumeInfo));
+        setRememberMe(true);
+      }
+    }
+    , []);
+    
+    useEffect(() => {
+      // Listen for credit usage updates
+      const handleRememberMeUpdate = (data: APPToRemember) => {
+        console.log(data, "remember me update");
+        return setRememberMe(data.resumeInfo ?? false);
+      };
+
+      window.addEventListener("quickcv:rememberMe" as any, handleRememberMeUpdate);
+
+      return () => {
+        window.removeEventListener(
+          "quickcv:rememberMe" as any,
+          handleRememberMeUpdate
+        );
+      };
+    }, []);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -75,10 +102,15 @@ export default function ResumeBuilder() {
             setGeneratingState(false)
             setChangeMade(false)
             decrementCreditEvent()
+            if(rememberMe) {
+              console.log('remember me, saving to local storage')
+              localStorage.setItem("quickcv:resumeInfo", JSON.stringify(resumeInfo));
+            }
         }
     }
     return (
       <>
+        
         <div className="w-full sm:w-1/2 h-full basis-2/5">
           {/* a form that ask for name, gender date of birth , occupation, role, and social hanlde  */}
           <form
@@ -87,27 +119,33 @@ export default function ResumeBuilder() {
           >
             {fields.map((field, index) => {
               return field?.type !== "textarea" ? (
-                <Input key={index} {...field} onChange={handleInputChange} />
+                <Input key={index} {...field} onChange={handleInputChange} value={`${resumeInfo?.[field.name] ?? ""}`} />
               ) : (
-                <TextArea key={index} {...field} onChange={handleInputChange} />
+                <TextArea key={index} {...field} onChange={handleInputChange} value={`${resumeInfo?.[field.name] ?? ""}`} />
               );
             })}
             <SocialMultipleFields
               onChange={handleSocalInputChange}
+              defaultValues={resumeInfo?.social}
             />
 
             <div className="mb-4">
               <h2 className="text-xl font-semibold mb-2">Education</h2>
-              <EducationFields onChange={handleEducationChange} />
+              <EducationFields onChange={handleEducationChange}
+                defaultValues={resumeInfo?.education}
+              />
             </div>
 
             <div className="mb-4">
               <h2 className="text-xl font-semibold mb-2">Work Experience</h2>
-              <ExperienceFields onChange={handleExperienceChange} />
+              <ExperienceFields onChange={handleExperienceChange}
+                defaultValues={resumeInfo?.experience}
+              />
             </div>
 
             <Input
               type="submit"
+              disabled={generatingState}
               value={`${generatingState ? "Loading " : "Submit"}`}
               className={`${
                 generatingState ? "bg-green-100" : "bg-green-500"
