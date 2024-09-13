@@ -75,10 +75,10 @@ export async function generateResume(
 
     console.log(message);
     const promptFilePath = path.join(
-      process.cwd(),
       "prompts",
       process.env.RESUME_SYSTEM_PROMPT ?? 'resume.txt'
     );
+    console.log(promptFilePath, "prompt file path");
     const systemPrompt = await fs.readFile(promptFilePath, "utf-8");
     const result = await streamText({
       model,
