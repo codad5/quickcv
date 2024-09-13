@@ -116,7 +116,7 @@ export default function ResumeBuilder() {
           </form>
         </div>
         {/* the output tab with bg color white */}
-        <PdfSection className="w-full sm:w-1/2 h-svh">{rawContent}</PdfSection>
+        <PdfSection className="w-full sm:w-1/2 h-svh" documentTitle={resumeInfo?.name ?? 'Quick Cv'}>{rawContent}</PdfSection>
       </>
     );
 }
