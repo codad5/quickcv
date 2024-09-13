@@ -1,6 +1,6 @@
 "use client";
 
-import { APPToRemember, updateRememberMe } from "@/helpers/commons/client";
+import { APPToRemember, isRemembered, updateRememberMe } from "@/helpers/commons/client";
 import { useState, useEffect } from "react";
 
 function RememberMe({
@@ -11,8 +11,15 @@ function RememberMe({
   const [rememberMe, setRememberMe] = useState(false);
 
   useEffect(() => {
+    if (isRemembered(app_name)) {
+      setRememberMe(true);
+    }
+  }, []);
+
+  useEffect(() => {
     updateRememberMe({ [app_name]: rememberMe });
   }, [rememberMe]);
+
 
   return (
     <div className="flex items-center justify-center">

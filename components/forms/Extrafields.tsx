@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Input, TextArea } from "@/components/forms/inputs";
 import { Education, Experience } from "@/app/actions";
 
@@ -55,6 +55,10 @@ function MultipleGroupFields<T>({
   const [groupData, setGroupData] = useState<T[]>(defaultValues);
   const [currentData, setCurrentData] = useState<T>({} as T);
   const [errors, setErrors] = useState<string[]>([]);
+
+  useEffect(() => {
+    setGroupData(defaultValues);
+  }, [defaultValues]);
 
   const handleInputChange = (
     e: React.ChangeEvent<

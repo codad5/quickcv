@@ -107,3 +107,4 @@ B.S. in Software Engineering, MIT (2014-2018)
 
 
 Remember: Output only the markdown-formatted resume content, tailored to the provided information and optimized for ATS. Ignore sections where no valid data is provided, don't even create the section heading. Never display "undefined" in the output, regardless of input data.
+NOTE : Only the Markdown content is required. No explanations or additional text should be included in the output.

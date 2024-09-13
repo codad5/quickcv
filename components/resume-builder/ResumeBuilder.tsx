@@ -6,7 +6,7 @@ import { EducationFields, ExperienceFields, SocialMultipleFields } from '../form
 import { readStreamableValue } from 'ai/rsc';
 import { useEffect, useState } from 'react';
 import { BasicResumeInfo, Education, Experience, generateResume } from '../../app/actions';
-import { APPToRemember, decrementCreditEvent } from '@/helpers/commons/client';
+import { APPToRemember, decrementCreditEvent, ForgetInfo, getRememberInfo, RememberInfo } from '@/helpers/commons/client';
 
 
 
@@ -22,9 +22,9 @@ export default function ResumeBuilder() {
     }, [resumeInfo])
     
     useEffect(() => {
-      const resumeInfo = localStorage.getItem("quickcv:resumeInfo");
+      const resumeInfo = getRememberInfo<BasicResumeInfo>("resumeInfo");
       if (resumeInfo) {
-        setResumeInfo(JSON.parse(resumeInfo));
+        setResumeInfo(resumeInfo);
         setRememberMe(true);
       }
     }
@@ -32,9 +32,9 @@ export default function ResumeBuilder() {
     
     useEffect(() => {
       // Listen for credit usage updates
-      const handleRememberMeUpdate = (data: APPToRemember) => {
+      const handleRememberMeUpdate = (data: {detail : APPToRemember}) => {
         console.log(data, "remember me update");
-        return setRememberMe(data.resumeInfo ?? false);
+        return setRememberMe(data.detail.resumeInfo ?? false);
       };
 
       window.addEventListener("quickcv:rememberMe" as any, handleRememberMeUpdate);
@@ -102,9 +102,13 @@ export default function ResumeBuilder() {
             setGeneratingState(false)
             setChangeMade(false)
             decrementCreditEvent()
+            console.log('decrementing credit')
+            console.log(rememberMe, 'remember me')
             if(rememberMe) {
               console.log('remember me, saving to local storage')
-              localStorage.setItem("quickcv:resumeInfo", JSON.stringify(resumeInfo));
+              RememberInfo("resumeInfo", resumeInfo);
+            } else {
+              ForgetInfo("resumeInfo");
             }
         }
     }
