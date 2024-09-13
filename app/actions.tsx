@@ -76,10 +76,11 @@ export async function generateResume(
     console.log(message);
     // console.log all directories in the current working directory
     const files = await fs.readdir(process.cwd());
-    console.log(files, 'files')
+    const appFiles = await fs.readdir(path.join(process.cwd(), "app"));
+    console.log(files, appFiles, "files and app files");
     const promptFilePath = path.join(
       process.cwd(),
-      "prompts",
+      "app/prompts",
       process.env.RESUME_SYSTEM_PROMPT ?? 'resume.txt'
     );
     const systemPrompt = await fs.readFile(promptFilePath, "utf-8");
