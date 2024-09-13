@@ -1,11 +1,12 @@
 "use client";
-import { CustomFieldProp, fields } from '../../helpers/resume-builder/fields';
+import { fields } from '../../helpers/resume-builder/fields';
 import { Input, TextArea } from '@/components/forms/inputs';
 import { PdfSection } from './PdfSection';
 import { EducationFields, ExperienceFields, SocialMultipleFields } from '../forms/Extrafields';
 import { readStreamableValue } from 'ai/rsc';
 import { useEffect, useState } from 'react';
 import { BasicResumeInfo, Education, Experience, generateResume } from '../../app/actions';
+import { decrementCreditEvent } from '@/helpers/commons/client';
 
 
 
@@ -73,6 +74,7 @@ export default function ResumeBuilder() {
         }finally {
             setGeneratingState(false)
             setChangeMade(false)
+            decrementCreditEvent()
         }
     }
     return (
