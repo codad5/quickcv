@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Input, TextArea } from "@/components/forms/inputs";
-import { Education, Experience } from "@/app/actions";
+import type { Education, Experience, Project, Social } from "@/app/actions";
 
-export type GroupField = {
+export type GroupField<Name = string> = {
   type:
     | "text"
     | "textarea"
@@ -18,7 +18,7 @@ export type GroupField = {
     | "password";
   placeholder: string;
   label: string;
-  name: string;
+  name: Name;
   required?: boolean;
   options?: (string | { value: string; label: string })[];
 };
@@ -111,7 +111,7 @@ function MultipleGroupFields<T>({
             name={field.name}
             onChange={handleInputChange}
             value={value}
-            className={`w-full p-2 border rounded ${isRequired}`}
+            className={`w-full p-2 border rounded text-black ${isRequired}`}
           >
             <option value="">{field.placeholder}</option>
             {field.options?.map((option, i) => (
@@ -164,14 +164,15 @@ function MultipleGroupFields<T>({
           {renderField(field)}
         </div>
       ))}
-
-      <button
-        onClick={addGroup}
-        className="bg-green-500 text-white px-4 py-2 rounded"
-        type="button"
-      >
-        Add {name}
-      </button>
+      <div className="w-full">
+        <button
+          onClick={addGroup}
+          className="bg-green-500 text-white px-4 py-2 rounded"
+          type="button"
+          >
+          Add {name}
+        </button>
+      </div>
 
       {/* Display existing groups */}
       {groupData.map((group, index) => (
@@ -201,7 +202,7 @@ export function EducationFields({
   onChange?: (data: Education[]) => void;
   defaultValues?: Education[];
 }) {
-  const fields: GroupField[] = [
+  const fields: GroupField<keyof Education>[] = [
     {
       name: "degree",
       type: "select",
@@ -209,6 +210,13 @@ export function EducationFields({
       label: "Degree",
       required: true,
       options: ["BSc", "MSc", "PhD"],
+    },
+    {
+      name: "fieldOfStudy",
+      type: "text",
+      placeholder: "Enter your field of study",
+      label: "Field of Study",
+      required: true,
     },
     {
       name: "school",
@@ -247,7 +255,7 @@ export function ExperienceFields({
   onChange?: (data: Experience[]) => void;
   defaultValues?: Experience[];
 }) {
-  const fields: GroupField[] = [
+  const fields: GroupField<keyof Experience>[] = [
     {
       name: "company",
       type: "text",
@@ -297,7 +305,7 @@ export function SocialMultipleFields({
   onChange?: (data: { [key: string]: string }[]) => void;
   defaultValues?: { [key: string]: string }[];
 }) {
-  const fields: GroupField[] = [
+  const fields: GroupField<keyof Social>[] = [
     {
       name: "platform",
       type: "text",
@@ -316,7 +324,61 @@ export function SocialMultipleFields({
   return (
     <Fields<{ [key: string]: string }>
       fields={fields}
-      name="Social Media"
+      name="Socials"
+      onChange={onChange}
+      defaultValues={defaultValues}
+    />
+  );
+}
+
+
+// for project fields
+export function ProjectFields({
+  onChange,
+  defaultValues = [],
+}: {
+  onChange?: (data: { [key: string]: string }[]) => void;
+  defaultValues?: { [key: string]: string }[];
+}) {
+  const fields: GroupField<keyof Project>[] = [
+    {
+      name: "title",
+      type: "text",
+      placeholder: "Enter project title",
+      label: "Title",
+      required: true,
+    },
+    {
+      name: "skills",
+      type: "text",
+      placeholder: "Enter your skills",
+      label: "Skills",
+      required: true,
+    },
+    {
+      name: "description",
+      type: "textarea",
+      placeholder: "Describe your project",
+      label: "Description",
+      required: true,
+    },
+    {
+      name: "startDate",
+      type: "date",
+      placeholder: "Enter start date",
+      label: "Start Date",
+    },
+    {
+      name: "endDate",
+      type: "date",
+      placeholder: "Enter end date",
+      label: "End Date",
+    },
+  ];
+  return (
+    <Fields<{ [key: string]: string }>
+      fields={fields}
+      name="Project"
       onChange={onChange}
       defaultValues={defaultValues}
     />

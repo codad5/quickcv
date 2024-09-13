@@ -2,7 +2,7 @@
 import { fields } from '../../helpers/resume-builder/fields';
 import { Input, TextArea } from '@/components/forms/inputs';
 import { PdfSection } from './PdfSection';
-import { EducationFields, ExperienceFields, SocialMultipleFields } from '../forms/Extrafields';
+import { EducationFields, ExperienceFields, ProjectFields, SocialMultipleFields } from '../forms/Extrafields';
 import { readStreamableValue } from 'ai/rsc';
 import { useEffect, useState } from 'react';
 import { BasicResumeInfo, Education, Experience, generateResume } from '../../app/actions';
@@ -79,6 +79,10 @@ export default function ResumeBuilder() {
       console.log(educationData, "education data");
       setResumeInfo((prev) => ({ ...prev, experience: educationData } as BasicResumeInfo))
     };
+    const handleProjectChange = (projectData: any) => {
+      console.log(projectData, "project data");
+      setResumeInfo((prev) => ({ ...prev, projects: projectData } as BasicResumeInfo));
+    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         try {
@@ -125,7 +129,6 @@ export default function ResumeBuilder() {
     }
     return (
       <>
-        
         <div className="w-full sm:w-1/2 h-full basis-2/5">
           {/* a form that ask for name, gender date of birth , occupation, role, and social hanlde  */}
           <form
@@ -134,27 +137,47 @@ export default function ResumeBuilder() {
           >
             {fields.map((field, index) => {
               return field?.type !== "textarea" ? (
-                <Input key={index} {...field} onChange={handleInputChange} value={`${resumeInfo?.[field.name] ?? ""}`} />
+                <Input
+                  key={index}
+                  {...field}
+                  onChange={handleInputChange}
+                  value={`${resumeInfo?.[field.name] ?? ""}`}
+                />
               ) : (
-                <TextArea key={index} {...field} onChange={handleInputChange} value={`${resumeInfo?.[field.name] ?? ""}`} />
+                <TextArea
+                  key={index}
+                  {...field}
+                  onChange={handleInputChange}
+                  value={`${resumeInfo?.[field.name] ?? ""}`}
+                />
               );
             })}
-            <SocialMultipleFields
-              onChange={handleSocalInputChange}
-              defaultValues={resumeInfo?.social}
-            />
+            <div className="w-full mb-4">
+              <SocialMultipleFields
+                onChange={handleSocalInputChange}
+                defaultValues={resumeInfo?.social}
+                />
+            </div>
 
-            <div className="mb-4">
-              <h2 className="text-xl font-semibold mb-2">Education</h2>
-              <EducationFields onChange={handleEducationChange}
+            <div className="w-full mb-4">
+              <EducationFields
+                onChange={handleEducationChange}
                 defaultValues={resumeInfo?.education}
               />
             </div>
 
-            <div className="mb-4">
-              <h2 className="text-xl font-semibold mb-2">Work Experience</h2>
-              <ExperienceFields onChange={handleExperienceChange}
+            <div className="w-full mb-4">
+              <ExperienceFields
+                onChange={handleExperienceChange}
                 defaultValues={resumeInfo?.experience}
+              />
+            </div>
+
+            {/* for projects */}
+            <div className="w-full mb-4">
+              <ProjectFields
+                onChange={handleProjectChange}
+                defaultValues={resumeInfo?.projects}
               />
             </div>
 
@@ -169,7 +192,12 @@ export default function ResumeBuilder() {
           </form>
         </div>
         {/* the output tab with bg color white */}
-        <PdfSection className="w-full sm:w-1/2 h-svh" documentTitle={resumeInfo?.name ?? 'Quick Cv'}>{rawContent}</PdfSection>
+        <PdfSection
+          className="w-full sm:w-1/2 h-svh"
+          documentTitle={resumeInfo?.name ?? "Quick Cv"}
+        >
+          {rawContent}
+        </PdfSection>
       </>
     );
 }

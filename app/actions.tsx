@@ -16,6 +16,7 @@ export type Education = {
   startYear?: string;
   endYear?: string;
   description?: string;
+  fieldOfStudy?: string;
 };
 
 export type Experience = {
@@ -31,6 +32,14 @@ export type Social = {
     url: string;
 };
 
+export type Project = {
+    title: string;
+    skills: string;
+    description: string;
+    startDate: string;
+    endDate: string;
+};
+
 export type BasicResumeInfo = {
   name: string;
   email: string;
@@ -40,6 +49,7 @@ export type BasicResumeInfo = {
   social?: Social[];
   education?: Education[];
   experience?: Experience[];
+  projects?: Project[];
   [key: string]: string | object | undefined;
 };
 
@@ -113,38 +123,40 @@ function generateResumeInfoMessage(resumeInfo: BasicResumeInfo): string {
 
     switch (key) {
       case "name":
-        message += `I am ${value}. `;
+        message += `I am ${value}`;
         break;
 
       case "email":
-        message += `My email is ${value}. `;
+        message += `My email is ${value}`;
         break;
 
       case "dob":
-        message += `I was born on ${value}. `;
+        message += `I was born on ${value}`;
         break;
       
         case "location":
-            message += `I am located in ${value}. `;
+            message += `I am located in ${value}`;
         break;
 
       case "social":
         message += `You can find my social profiles platforms url(or username): ${JSON.stringify(
           value
-        )}. `;
+        )}`;
         break;
 
       case "description":
-        message += `Here is a brief description about me: ${value}. `;
+        message += `Here is a brief description about me: ${value}`;
         break;
 
       case "education":
         message += `Here is my educational background: `;
         (value as Education[]).forEach((edu) => {
           message += `I have a ${edu.degree} from ${edu.school}. `;
-          if (edu.startYear) message += `I started in ${edu.startYear}. `;
-          if (edu.endYear) message += `and finished in ${edu.endYear}. `;
-          if (edu.description) message += `${edu.description}. `;
+          if (edu.fieldOfStudy) message += `I studied ${edu.fieldOfStudy}, `;
+          if (edu.startYear) message += `I started in ${edu.startYear}, `;
+          if (edu.endYear) message += `and finished in ${edu.endYear}, `;
+          if (edu.description) message += `${edu.description}, `;
+          message += ". ";
         });
         break;
 
@@ -155,25 +167,39 @@ function generateResumeInfoMessage(resumeInfo: BasicResumeInfo): string {
           if (exp.startDate) message += ` from ${exp.startDate}`;
           if (exp.endDate) message += ` to ${exp.endDate}`;
           if (exp.description)
-            message += `Here is a brief description of my role: ${exp.description}. `;
+            message += `Here is a brief description of my role: ${exp.description}`;
+          message += ". ";
         });
         break;
 
       case "role":
-        message += `This resume is for the role of ${value}. `;
+        message += `This resume is for the role of ${value}`;
         break;
 
       case "targetCompany":
-        message += `I want this resume to be tailored for a position at ${value}. `;
+        message += `I want this resume to be tailored for a position at ${value}`;
+        break;
+      
+      case "projects":
+        message += `Here are some projects I have worked on: `;
+        (value as Project[]).forEach((project) => {
+          message += `I worked on a project titled ${project.title} `;
+          if (project.skills) message += `using the following skills: (${project.skills}), `;
+          if (project.startDate) message += `I started in ${project.startDate}, `;
+          if (project.endDate) message += `and finished in ${project.endDate}, `;
+          if (project.description) message += `${project.description}, `;
+          message += ". ";
+        });
         break;
 
       default:
         // Stringify and add any other unhandled keys
         message += `For this key "${key}", here is my info: ${JSON.stringify(
           value
-        )}. `;
+        )}`;
         break;
     }
+    message += ". ";
   }
 
   return message;
