@@ -6,7 +6,7 @@ import { EducationFields, ExperienceFields, SocialMultipleFields } from '../form
 import { readStreamableValue } from 'ai/rsc';
 import { useEffect, useState } from 'react';
 import { BasicResumeInfo, Education, Experience, generateResume } from '../../app/actions';
-import { APPToRemember, decrementCreditEvent, ForgetInfo, getRememberInfo, RememberInfo } from '@/helpers/commons/client';
+import { APPToRemember, decrementCreditEvent, ForgetInfo, getRememberInfo, newNotification, RememberInfo } from '@/helpers/commons/client';
 
 
 
@@ -107,7 +107,8 @@ export default function ResumeBuilder() {
             }
             
         }catch (error) {
-            console.error(error)
+          console.error(error)
+          newNotification((error as Error).message, 'error')
         }finally {
             setGeneratingState(false)
             setChangeMade(false)

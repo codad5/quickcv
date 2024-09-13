@@ -34,3 +34,15 @@ export const getRememberInfo = <T>(key: keyof APPToRemember): T | null => {
 export const isRemembered = (key: keyof APPToRemember) => {
   return !!localStorage.getItem(`quickcv:${key}`);
 }
+
+
+
+export type NotifcationBody = {
+  message: string;
+  type: 'success' | 'error' | 'info';
+}
+
+export const newNotification = (message: string, type: NotifcationBody['type']) => {
+  const event = new CustomEvent('quickcv:newNotification', { detail: { message, type } });
+  window.dispatchEvent(event);
+}
