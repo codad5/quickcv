@@ -74,11 +74,14 @@ export async function generateResume(
     const model = modelProvider(modelDefinition.id);
 
     console.log(message);
+    // console.log all directories in the current working directory
+    const files = await fs.readdir(process.cwd());
+    console.log(files, 'files')
     const promptFilePath = path.join(
+      process.cwd(),
       "prompts",
       process.env.RESUME_SYSTEM_PROMPT ?? 'resume.txt'
     );
-    console.log(promptFilePath, "prompt file path");
     const systemPrompt = await fs.readFile(promptFilePath, "utf-8");
     const result = await streamText({
       model,
