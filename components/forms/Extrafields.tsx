@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Input, TextArea } from "@/components/forms/inputs";
-import type { Education, Experience, Social } from "@/app/actions";
+import type { Education, Experience, Project, Social } from "@/app/actions";
 
 export type GroupField<Name = string> = {
   type:
@@ -323,7 +323,61 @@ export function SocialMultipleFields({
   return (
     <Fields<{ [key: string]: string }>
       fields={fields}
-      name="Social Media"
+      name="Socials"
+      onChange={onChange}
+      defaultValues={defaultValues}
+    />
+  );
+}
+
+
+// for project fields
+export function ProjectFields({
+  onChange,
+  defaultValues = [],
+}: {
+  onChange?: (data: { [key: string]: string }[]) => void;
+  defaultValues?: { [key: string]: string }[];
+}) {
+  const fields: GroupField<keyof Project>[] = [
+    {
+      name: "title",
+      type: "text",
+      placeholder: "Enter project title",
+      label: "Title",
+      required: true,
+    },
+    {
+      name: "skills",
+      type: "text",
+      placeholder: "Enter your skills",
+      label: "Skills",
+      required: true,
+    },
+    {
+      name: "description",
+      type: "textarea",
+      placeholder: "Describe your project",
+      label: "Description",
+      required: true,
+    },
+    {
+      name: "startDate",
+      type: "date",
+      placeholder: "Enter start date",
+      label: "Start Date",
+    },
+    {
+      name: "endDate",
+      type: "date",
+      placeholder: "Enter end date",
+      label: "End Date",
+    },
+  ];
+  return (
+    <Fields<{ [key: string]: string }>
+      fields={fields}
+      name="Project"
       onChange={onChange}
       defaultValues={defaultValues}
     />

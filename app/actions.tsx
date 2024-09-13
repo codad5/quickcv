@@ -32,6 +32,14 @@ export type Social = {
     url: string;
 };
 
+export type Project = {
+    title: string;
+    skills: string;
+    description: string;
+    startDate: string;
+    endDate: string;
+};
+
 export type BasicResumeInfo = {
   name: string;
   email: string;
@@ -41,6 +49,7 @@ export type BasicResumeInfo = {
   social?: Social[];
   education?: Education[];
   experience?: Experience[];
+  projects?: Project[];
   [key: string]: string | object | undefined;
 };
 
@@ -169,6 +178,18 @@ function generateResumeInfoMessage(resumeInfo: BasicResumeInfo): string {
 
       case "targetCompany":
         message += `I want this resume to be tailored for a position at ${value}`;
+        break;
+      
+      case "projects":
+        message += `Here are some projects I have worked on: `;
+        (value as Project[]).forEach((project) => {
+          message += `I worked on a project titled ${project.title} `;
+          if (project.skills) message += `using the following skills: (${project.skills}), `;
+          if (project.startDate) message += `I started in ${project.startDate}, `;
+          if (project.endDate) message += `and finished in ${project.endDate}, `;
+          if (project.description) message += `${project.description}, `;
+          message += ". ";
+        });
         break;
 
       default:
