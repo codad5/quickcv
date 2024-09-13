@@ -30,6 +30,16 @@ export default function ResumeBuilder() {
     }
     , []);
     
+    // set interval to update save data to remember me local storage every 9 seconds
+    useEffect(() => {
+      const interval = setInterval(() => {
+        if (rememberMe && changeMade) {
+          RememberInfo("resumeInfo", resumeInfo);
+        }
+      }, 9000);
+      return () => clearInterval(interval);
+    }, [resumeInfo, rememberMe]);
+    
     useEffect(() => {
       // Listen for credit usage updates
       const handleRememberMeUpdate = (data: {detail : APPToRemember}) => {

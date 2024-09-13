@@ -1,4 +1,3 @@
-import { BasicResumeInfo } from "@/app/actions";
 
 export const updateCreditUsage = (remainingCredits: number) => {
   const event = new CustomEvent('quickcv:creditUpdate', { detail: { remains: remainingCredits } });
