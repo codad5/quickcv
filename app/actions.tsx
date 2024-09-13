@@ -150,9 +150,11 @@ function generateResumeInfoMessage(resumeInfo: BasicResumeInfo): string {
       case "experience":
         message += `I have experience working at the following companies: `;
         (value as Experience[]).forEach((exp) => {
-          message += `I worked at ${exp.company} as a ${exp.position} from ${exp.startDate} to ${exp.endDate}. `;
+          message += `I worked at ${exp.company} as a ${exp.position}`;
+          if (exp.startDate) message += ` from ${exp.startDate}`;
+          if (exp.endDate) message += ` to ${exp.endDate}`;
           if (exp.description)
-            message += `My responsibilities included: ${exp.description}. `;
+            message += `Here is a brief description of my role: ${exp.description}. `;
         });
         break;
 
