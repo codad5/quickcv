@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Input, TextArea } from "@/components/forms/inputs";
-import { Education, Experience } from "@/app/actions";
+import type { Education, Experience, Social } from "@/app/actions";
 
-export type GroupField = {
+export type GroupField<Name = string> = {
   type:
     | "text"
     | "textarea"
@@ -18,7 +18,7 @@ export type GroupField = {
     | "password";
   placeholder: string;
   label: string;
-  name: string;
+  name: Name;
   required?: boolean;
   options?: (string | { value: string; label: string })[];
 };
@@ -111,7 +111,7 @@ function MultipleGroupFields<T>({
             name={field.name}
             onChange={handleInputChange}
             value={value}
-            className={`w-full p-2 border rounded ${isRequired}`}
+            className={`w-full p-2 border rounded text-black ${isRequired}`}
           >
             <option value="">{field.placeholder}</option>
             {field.options?.map((option, i) => (
@@ -201,7 +201,7 @@ export function EducationFields({
   onChange?: (data: Education[]) => void;
   defaultValues?: Education[];
 }) {
-  const fields: GroupField[] = [
+  const fields: GroupField<keyof Education>[] = [
     {
       name: "degree",
       type: "select",
@@ -209,6 +209,13 @@ export function EducationFields({
       label: "Degree",
       required: true,
       options: ["BSc", "MSc", "PhD"],
+    },
+    {
+      name: "fieldOfStudy",
+      type: "text",
+      placeholder: "Enter your field of study",
+      label: "Field of Study",
+      required: true,
     },
     {
       name: "school",
@@ -247,7 +254,7 @@ export function ExperienceFields({
   onChange?: (data: Experience[]) => void;
   defaultValues?: Experience[];
 }) {
-  const fields: GroupField[] = [
+  const fields: GroupField<keyof Experience>[] = [
     {
       name: "company",
       type: "text",
@@ -297,7 +304,7 @@ export function SocialMultipleFields({
   onChange?: (data: { [key: string]: string }[]) => void;
   defaultValues?: { [key: string]: string }[];
 }) {
-  const fields: GroupField[] = [
+  const fields: GroupField<keyof Social>[] = [
     {
       name: "platform",
       type: "text",
