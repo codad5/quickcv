@@ -46,7 +46,12 @@ export const fields: CustomFieldProp[] = [
         type: 'textarea',
         placeholder: 'A brief description about yourself',
         label: 'Description',
-    }
+    },
+    {
+        name: 'location',
+        placeholder: 'Lagos, Nigeria',
+        label: 'Location',
+    },
 
     
 ]
