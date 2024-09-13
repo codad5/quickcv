@@ -105,14 +105,14 @@ export default function ResumeBuilder() {
                 if(!value) return;
                 setRawContent(value as string)
             }
-            
+            newNotification('Resume Generated', 'success')
+            decrementCreditEvent()
         }catch (error) {
           console.error(error)
           newNotification((error as Error).message, 'error')
         }finally {
             setGeneratingState(false)
             setChangeMade(false)
-            decrementCreditEvent()
             console.log('decrementing credit')
             console.log(rememberMe, 'remember me')
             if(rememberMe) {
