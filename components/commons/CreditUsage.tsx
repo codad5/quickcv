@@ -9,7 +9,7 @@ function CreditUsage({ remains, max }: { remains: number; max: number }) {
   useEffect(() => {
     // Listen for credit usage updates
     const handleCreditUpdate = () => {
-     return setRemains((prev) => prev - 1);
+     return setRemains((prev) => prev > 0 ? prev - 1 : 0);
     };
 
     window.addEventListener("quickcv:decrementCredit" as any, handleCreditUpdate);
