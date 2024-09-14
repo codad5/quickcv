@@ -13,6 +13,8 @@ import { APPToRemember, decrementCreditEvent, ForgetInfo, getRememberInfo, newNo
 export default function ResumeBuilder() {
     const [resumeInfo, setResumeInfo] = useState<BasicResumeInfo | null>(null);
     const [rawContent, setRawContent] = useState<string>("# Heading One (H1)")
+    const [generatedContent, setGeneratedContent] = useState<string[]>([]);
+    const [currentVersionIndex, setCurrentVersionIndex] = useState(0);
     const [generatingState, setGeneratingState] = useState(false)
     const [changeMade, setChangeMade] = useState(false)
     const [rememberMe, setRememberMe] = useState(true)
@@ -110,6 +112,7 @@ export default function ResumeBuilder() {
                 if(!value) return;
                 setRawContent(value as string)
             }
+            setGeneratedContent((prev) => [...prev, rawContent])
             decrementCreditEvent()
             setChangeMade(false)
             newNotification('Resume Generated', 'success')
@@ -135,6 +138,20 @@ export default function ResumeBuilder() {
         preventDefault: () => {},
       } as React.FormEvent<HTMLFormElement>);
     }, [handleSubmit]);
+    
+  const handleNextVersion = useCallback(() => {
+      console.log('next version', generatedContent, currentVersionIndex)
+      setRetryCount(0); // Reset retry count
+      setCurrentVersionIndex((prev) => prev + 1);
+      setRawContent(generatedContent[currentVersionIndex]);
+      console.log(generatedContent, currentVersionIndex, 'generated content')
+    }, [currentVersionIndex, generatedContent]);
+    
+    const handlePrevVersion = useCallback(() => {
+      setRetryCount(0); // Reset retry count
+      setCurrentVersionIndex((prev) => prev - 1);
+      setRawContent(generatedContent[currentVersionIndex]);
+    }, [currentVersionIndex, generatedContent]);
     return (
       <>
         <div className="w-full sm:w-1/2 h-full basis-2/5">
@@ -207,17 +224,32 @@ export default function ResumeBuilder() {
           >
             {rawContent}
           </PdfSection>
-          {/* retry button */}
-          <button
-            onClick={handleRetry}
-            className={` text-white px-4 py-2 rounded ${
-              generatingState
-                ? "opacity-50 cursor-not-allowed bg-green-100"
-                : "bg-green-500"
-            }`}
-          >
-            Regenerate
-          </button>
+          <div className="flex space-x-4">
+            <button
+              onClick={handlePrevVersion}
+              disabled={currentVersionIndex <= 0}
+              className="text-white bg-blue-500 px-4 py-2 rounded"
+            >
+              Previous
+            </button>
+            <button
+              onClick={handleNextVersion}
+              disabled={currentVersionIndex >= generatedContent.length - 1}
+              className="text-white bg-blue-500 px-4 py-2 rounded"
+            >
+              Next
+            </button>
+            <button
+              onClick={handleRetry}
+              className={`text-white px-4 py-2 rounded ${
+                generatingState
+                  ? "opacity-50 cursor-not-allowed bg-green-100"
+                  : "bg-green-500"
+              }`}
+            >
+              {generatedContent.length === 0 ? "Submit" : "Regenerate"}
+            </button>
+          </div>
         </div>
       </>
     );
