@@ -63,8 +63,35 @@ const groq = createOpenAI({
   apiKey: process.env.GROQ_API_KEY,
 });
 
+
+interface PromptFile {
+  fileName: string;
+  rank: number;
+}
+
+const getPromptFiles = (app: string): PromptFile[] => {
+  const promptEnvVars = Object.entries(process.env)
+    .filter(([key]) => key.startsWith(app))
+    .map(([key, value]): PromptFile => {
+      const rank = parseInt(key.split("_").pop() || "0");
+      return { fileName: value || "", rank: (isNaN(rank) ? 0 : rank)  + 1 };
+    })
+    .filter((file) => file.fileName);
+
+  return promptEnvVars.sort((a, b) => b.rank - a.rank);
+};
+
+const selectPromptFile = (promptFiles: PromptFile[], retry: number): string => {
+  if (retry === 0 && promptFiles.length > 0) {
+    return promptFiles[0].fileName; // Use the highest-ranked prompt for the first attempt
+  }
+  const randomIndex = Math.floor(Math.random() * promptFiles.length);
+  return promptFiles[randomIndex]?.fileName || promptFiles[0].fileName; // Fallback to the first prompt if no others are available
+};
+
 export async function generateResume(
-  resumeInfo: BasicResumeInfo
+  resumeInfo: BasicResumeInfo, 
+  retry : number = 0
 ): Promise<CustomResponse> {
   try {
     const ip = getIp() ?? "localhost";
@@ -84,12 +111,14 @@ export async function generateResume(
     const model = modelProvider(modelDefinition.id);
 
     console.log(message);
+    const promptFiles = getPromptFiles("RESUME_SYSTEM_PROMPT");
+    const selectedPromptFile = selectPromptFile(promptFiles, retry);
     const promptFilePath = path.join(
       process.cwd(),
       "prompts",
-      process.env.RESUME_SYSTEM_PROMPT ?? 'resume.txt'
+      selectedPromptFile
     );
-    console.log(promptFilePath, "prompt file path");
+    console.log(promptFilePath, "selected prompt file path");
     const systemPrompt = await fs.readFile(promptFilePath, "utf-8");
     const result = await streamText({
       model,

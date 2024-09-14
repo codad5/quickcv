@@ -4,7 +4,7 @@ import { Input, TextArea } from '@/components/forms/inputs';
 import { PdfSection } from './PdfSection';
 import { EducationFields, ExperienceFields, ProjectFields, SocialMultipleFields } from '../forms/Extrafields';
 import { readStreamableValue } from 'ai/rsc';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { BasicResumeInfo, Education, Experience, generateResume } from '../../app/actions';
 import { APPToRemember, decrementCreditEvent, ForgetInfo, getRememberInfo, newNotification, RememberInfo } from '@/helpers/commons/client';
 
@@ -16,6 +16,7 @@ export default function ResumeBuilder() {
     const [generatingState, setGeneratingState] = useState(false)
     const [changeMade, setChangeMade] = useState(false)
     const [rememberMe, setRememberMe] = useState(true)
+    const [retryCount, setRetryCount] = useState(0);
 
     useEffect(() => {
         setChangeMade(true)
@@ -102,7 +103,7 @@ export default function ResumeBuilder() {
             if (!message.name || !message.role || !message.email) throw new Error('Name, role and email are required');
             if (message.name === '' || message.role === '' || message.email === '')  throw new Error('Name, role and email are required');
             setGeneratingState(true)
-            const result = await generateResume(message);
+            const result = await generateResume(message, retryCount);
             if (result.status === 'error') throw new Error(result.message);
             for await (const value of readStreamableValue(result.message)) {
                 console.log(value);
@@ -127,6 +128,13 @@ export default function ResumeBuilder() {
             }
         }
     }
+    
+    const handleRetry = useCallback(() => {
+      setRetryCount(0); // Reset retry count
+      handleSubmit({
+        preventDefault: () => {},
+      } as React.FormEvent<HTMLFormElement>);
+    }, [handleSubmit]);
     return (
       <>
         <div className="w-full sm:w-1/2 h-full basis-2/5">
@@ -156,7 +164,7 @@ export default function ResumeBuilder() {
               <SocialMultipleFields
                 onChange={handleSocalInputChange}
                 defaultValues={resumeInfo?.social}
-                />
+              />
             </div>
 
             <div className="w-full mb-4">
@@ -191,13 +199,26 @@ export default function ResumeBuilder() {
             />
           </form>
         </div>
-        {/* the output tab with bg color white */}
-        <PdfSection
-          className="w-full sm:w-1/2 h-svh"
-          documentTitle={resumeInfo?.name ?? "Quick Cv"}
-        >
-          {rawContent}
-        </PdfSection>
+        <div className="w-full sm:w-1/2 h-svh">
+          {/* the output tab with bg color white */}
+          <PdfSection
+            className="w-full"
+            documentTitle={resumeInfo?.name ?? "Quick Cv"}
+          >
+            {rawContent}
+          </PdfSection>
+          {/* retry button */}
+          <button
+            onClick={handleRetry}
+            className={` text-white px-4 py-2 rounded ${
+              generatingState
+                ? "opacity-50 cursor-not-allowed bg-green-100"
+                : "bg-green-500"
+            }`}
+          >
+            Regenerate
+          </button>
+        </div>
       </>
     );
 }
