@@ -4,18 +4,22 @@ import { Input, TextArea } from '@/components/forms/inputs';
 import { PdfSection } from './PdfSection';
 import { EducationFields, ExperienceFields, ProjectFields, SocialMultipleFields } from '../forms/Extrafields';
 import { readStreamableValue } from 'ai/rsc';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { BasicResumeInfo, Education, Experience, generateResume } from '../../app/actions';
 import { APPToRemember, decrementCreditEvent, ForgetInfo, getRememberInfo, newNotification, RememberInfo } from '@/helpers/commons/client';
+import { Next, Previous, Repeat, Send2 } from 'iconsax-react';
 
 
 
 export default function ResumeBuilder() {
     const [resumeInfo, setResumeInfo] = useState<BasicResumeInfo | null>(null);
     const [rawContent, setRawContent] = useState<string>("# Heading One (H1)")
+    const [generatedContent, setGeneratedContent] = useState<string[]>([]);
+    const [currentVersionIndex, setCurrentVersionIndex] = useState(0);
     const [generatingState, setGeneratingState] = useState(false)
     const [changeMade, setChangeMade] = useState(false)
     const [rememberMe, setRememberMe] = useState(true)
+    const [retryCount, setRetryCount] = useState(0);
 
     useEffect(() => {
         setChangeMade(true)
@@ -102,13 +106,14 @@ export default function ResumeBuilder() {
             if (!message.name || !message.role || !message.email) throw new Error('Name, role and email are required');
             if (message.name === '' || message.role === '' || message.email === '')  throw new Error('Name, role and email are required');
             setGeneratingState(true)
-            const result = await generateResume(message);
+            const result = await generateResume(message, retryCount);
             if (result.status === 'error') throw new Error(result.message);
             for await (const value of readStreamableValue(result.message)) {
                 console.log(value);
                 if(!value) return;
                 setRawContent(value as string)
             }
+            setGeneratedContent((prev) => [...prev, rawContent])
             decrementCreditEvent()
             setChangeMade(false)
             newNotification('Resume Generated', 'success')
@@ -127,6 +132,27 @@ export default function ResumeBuilder() {
             }
         }
     }
+    
+    const handleRetry = useCallback(() => {
+      setRetryCount(0); // Reset retry count
+      handleSubmit({
+        preventDefault: () => {},
+      } as React.FormEvent<HTMLFormElement>);
+    }, [handleSubmit]);
+    
+  const handleNextVersion = useCallback(() => {
+      console.log('next version', generatedContent, currentVersionIndex)
+      setRetryCount(0); // Reset retry count
+      setCurrentVersionIndex((prev) => prev + 1);
+      setRawContent(generatedContent[currentVersionIndex]);
+      console.log(generatedContent, currentVersionIndex, 'generated content')
+    }, [currentVersionIndex, generatedContent]);
+    
+    const handlePrevVersion = useCallback(() => {
+      setRetryCount(0); // Reset retry count
+      setCurrentVersionIndex((prev) => prev - 1);
+      setRawContent(generatedContent[currentVersionIndex]);
+    }, [currentVersionIndex, generatedContent]);
     return (
       <>
         <div className="w-full sm:w-1/2 h-full basis-2/5">
@@ -156,7 +182,7 @@ export default function ResumeBuilder() {
               <SocialMultipleFields
                 onChange={handleSocalInputChange}
                 defaultValues={resumeInfo?.social}
-                />
+              />
             </div>
 
             <div className="w-full mb-4">
@@ -180,24 +206,54 @@ export default function ResumeBuilder() {
                 defaultValues={resumeInfo?.projects}
               />
             </div>
-
-            <Input
-              type="submit"
-              disabled={generatingState}
-              value={`${generatingState ? "Loading " : "Submit"}`}
-              className={`${
-                generatingState ? "bg-green-100" : "bg-green-500"
-              } text-white p-2 rounded`}
-            />
+            <div className="w-full mb-4">
+              <button
+                type="submit"
+                disabled={generatingState}
+                className={`${
+                  generatingState ? "bg-green-100" : "bg-green-500"
+                  } text-white p-2 rounded`}
+                  >
+                {generatingState ? "Loading..." : <Send2 />}
+              </button>
+            </div>
           </form>
         </div>
-        {/* the output tab with bg color white */}
-        <PdfSection
-          className="w-full sm:w-1/2 h-svh"
-          documentTitle={resumeInfo?.name ?? "Quick Cv"}
-        >
-          {rawContent}
-        </PdfSection>
+        <div className="w-full sm:w-1/2 h-svh">
+          {/* the output tab with bg color white */}
+          <PdfSection
+            className="w-full"
+            documentTitle={resumeInfo?.name ?? "Quick Cv"}
+          >
+            {rawContent}
+          </PdfSection>
+          <div className="flex space-x-4">
+            <button
+              onClick={handlePrevVersion}
+              disabled={currentVersionIndex <= 0}
+              className="text-white bg-blue-500 px-4 py-2 rounded"
+            >
+              <Previous />
+            </button>
+            <button
+              onClick={handleNextVersion}
+              disabled={currentVersionIndex >= generatedContent.length - 1}
+              className="text-white bg-blue-500 px-4 py-2 rounded"
+            >
+              <Next />
+            </button>
+            <button
+              onClick={handleRetry}
+              className={`text-white px-4 py-2 rounded ${
+                generatingState
+                  ? "opacity-50 cursor-not-allowed bg-green-100"
+                  : "bg-green-500"
+              }`}
+            >
+              {generatedContent.length === 0 ? <Send2 /> : <Repeat />}
+            </button>
+          </div>
+        </div>
       </>
     );
 }

@@ -4,6 +4,7 @@ import { PrintableComponent } from "@/components/pdf/viewer";
 import { useReactToPrint } from "react-to-print";
 import Markdown from "react-markdown";
 import remarkGfm from 'remark-gfm'
+import { Edit, Printer } from "iconsax-react";
  
 
 export function PdfSection({
@@ -75,13 +76,13 @@ export function PdfSection({
           onClick={handlePrint}
           className="bg-green-500 text-white p-2 rounded"
         >
-          Print
+          <Printer  />
         </button>
         <button
           onClick={toggleViewRaw}
           className="bg-green-500 text-white p-2 rounded"
         >
-          {viewRaw ? "View Formatted" : "View Raw"}
+          {viewRaw ? "View Formatted" : <Edit />}
         </button>
       </div>
     </div>
