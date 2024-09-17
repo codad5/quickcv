@@ -1,0 +1,119 @@
+@media print {
+
+    html,
+    body {
+        height: 100%;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    body {
+        margin: 0 !important;
+        box-shadow: none;
+    }
+
+    .printableComponent {
+        margin: 0 !important;
+        page-break-inside: avoid;
+    }
+
+    .printableComponent h1,
+    .printableComponent h2,
+    .printableComponent h3,
+    .printableComponent p,
+    .printableComponent div,
+    .printableComponent section {
+        page-break-inside: avoid;
+        orphans: 3;
+        widows: 3;
+    }
+
+    @page {
+        size: A4;
+        margin: 25mm 12.5mm !important;
+    }
+
+    textarea,
+    input {
+        border: 1px solid black;
+    }
+
+    button,
+    .no-print {
+        display: none !important;
+    }
+
+    /* Tailwind prose customization for print */
+    .prose {
+        font-size: 10pt !important;
+        line-height: 1.2 !important;
+        max-width: none !important;
+        color: black;
+        font-weight: 300 !important;
+        /* Light font weight for normal text */
+    }
+
+    .prose h1 {
+        font-size: 16pt !important;
+        font-weight: 600 !important;
+        /* Slightly heavier font weight for headings */
+    }
+
+    .prose h2 {
+        font-size: 14pt !important;
+        font-weight: 500 !important;
+    }
+
+    .prose h3 {
+        font-size: 12pt !important;
+        font-weight: 500 !important;
+    }
+
+    .prose p {
+        font-size: 10pt !important;
+        margin: 0 0 10px !important;
+        font-weight: 300 !important;
+        /* Light font weight for paragraph text */
+    }
+
+    /* Lists styling */
+    .prose ul,
+    .prose ol {
+        margin: 0 0 10px !important;
+        padding-left: 1rem !important;
+        font-size: 10pt !important;
+        font-weight: 300 !important;
+    }
+
+    /* Links - Default blue color with underline */
+    .prose a {
+        color: #0000EE !important;
+        /* Default link color (blue) */
+        text-decoration: underline !important;
+        /* Underline the link */
+        font-weight: 400 !important;
+        /* Slightly heavier for links */
+    }
+
+    /* Code blocks */
+    .prose pre {
+        font-size: 9pt !important;
+        margin: 10px 0 !important;
+    }
+
+    .prose code {
+        font-size: 9pt !important;
+    }
+
+    /* Tables */
+    .prose table {
+        font-size: 9pt !important;
+        border-collapse: collapse;
+    }
+
+    .prose table th,
+    .prose table td {
+        padding: 4px !important;
+        border: 1px solid black;
+    }
+}
