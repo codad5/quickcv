@@ -77,8 +77,9 @@ const getPromptFiles = (app: string): PromptFile[] => {
       return { fileName: value || "", rank: (isNaN(rank) ? 0 : rank)  + 1 };
     })
     .filter((file) => file.fileName);
-
-  return promptEnvVars.sort((a, b) => b.rank - a.rank);
+  // return with the highest-ranked prompt first where 1 is highest/best 
+  console.log(promptEnvVars, "before sort");
+  return promptEnvVars.sort((a, b) => b.rank - a.rank).reverse();
 };
 
 const selectPromptFile = (promptFiles: PromptFile[], retry: number): string => {
@@ -118,7 +119,8 @@ export async function generateResume(
       "prompts",
       selectedPromptFile
     );
-    console.log(promptFilePath, "selected prompt file path");
+    console.log(promptFiles);
+    console.log(promptFilePath, "selected prompt file path", `for retry ${retry}`);
     const systemPrompt = await fs.readFile(promptFilePath, "utf-8");
     const result = await streamText({
       model,
