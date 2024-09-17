@@ -115,7 +115,7 @@ export default function ResumeBuilder() {
     );
   };
 
-  const handleSubmit = useCallback(
+  const handleSubmit = 
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       try {
@@ -125,9 +125,7 @@ export default function ResumeBuilder() {
         console.error(error);
         newNotification((error as Error).message, "error");
       }
-    },
-    [changeMade]
-  );
+    }
 
   const handleRetry = useCallback(async () => {
     try {
