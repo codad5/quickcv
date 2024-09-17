@@ -5,7 +5,15 @@ import { useReactToPrint } from "react-to-print";
 import Markdown from "react-markdown";
 import remarkGfm from 'remark-gfm'
 import { Edit, Printer } from "iconsax-react";
+import generatePDF, { Resolution, Margin } from "react-to-pdf";
  
+//  return generatePDF(printableRef, {
+//    filename: `${documentTitle || "resume"}.pdf`,
+//    resolution: Resolution.HIGH,
+//    page: {
+//      margin: Margin.LARGE,
+//    },
+//  });
 
 export function PdfSection({
   children,
@@ -25,14 +33,24 @@ export function PdfSection({
     setRawContent(children);
   }, [children]);
 
-  const handlePrint = useReactToPrint({
-    content: () => printableRef.current,
-    documentTitle,
-    onBeforeGetContent: () => {
-      setViewRaw(false);
-      syncContent();
-    },
-  });
+  // const handlePrint = useReactToPrint({
+  //   content: () => printableRef.current,
+  //   documentTitle,
+  //   onBeforeGetContent: () => {
+  //     setViewRaw(false);
+  //     syncContent();
+  //   },
+  // });
+
+  const handlePrint = () => {
+     return generatePDF(printableRef, {
+       filename: `${documentTitle || "resume"}.pdf`,
+       resolution: Resolution.HIGH,
+       page: {
+         margin: Margin.LARGE,
+       },
+     });
+  };
 
   const syncContent = () => {
     if (textareaRef.current) {
@@ -64,7 +82,7 @@ export function PdfSection({
           ) : (
             <Markdown
               remarkPlugins={[remarkGfm]}
-              className="prose prose-sm prose-zinc w-full"
+              className="prose prose-sm prose-zinc w-full max-w-none"
             >
               {rawContent}
             </Markdown>
@@ -76,7 +94,7 @@ export function PdfSection({
           onClick={handlePrint}
           className="bg-green-500 text-white p-2 rounded"
         >
-          <Printer  />
+          <Printer />
         </button>
         <button
           onClick={toggleViewRaw}
