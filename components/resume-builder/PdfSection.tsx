@@ -6,7 +6,7 @@ import Markdown from "react-markdown";
 import remarkGfm from 'remark-gfm'
 import { Edit, Printer } from "iconsax-react";
 import generatePDF, { Resolution, Margin } from "react-to-pdf";
-// import '@/styles/print.scss';
+import '@/styles/print.scss';
  
 //  return generatePDF(printableRef, {
 //    filename: `${documentTitle || "resume"}.pdf`,
