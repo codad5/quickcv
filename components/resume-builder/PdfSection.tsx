@@ -6,6 +6,7 @@ import Markdown from "react-markdown";
 import remarkGfm from 'remark-gfm'
 import { Edit, Printer } from "iconsax-react";
 import generatePDF, { Resolution, Margin } from "react-to-pdf";
+import '@/styles/print.scss';
  
 //  return generatePDF(printableRef, {
 //    filename: `${documentTitle || "resume"}.pdf`,
@@ -33,24 +34,24 @@ export function PdfSection({
     setRawContent(children);
   }, [children]);
 
-  // const handlePrint = useReactToPrint({
-  //   content: () => printableRef.current,
-  //   documentTitle,
-  //   onBeforeGetContent: () => {
-  //     setViewRaw(false);
-  //     syncContent();
-  //   },
-  // });
+  const handlePrint = useReactToPrint({
+    content: () => printableRef.current,
+    documentTitle,
+    onBeforeGetContent: () => {
+      setViewRaw(false);
+      syncContent();
+    },
+  });
 
-  const handlePrint = () => {
-     return generatePDF(printableRef, {
-       filename: `${documentTitle || "resume"}.pdf`,
-       resolution: Resolution.HIGH,
-       page: {
-         margin: Margin.LARGE,
-       },
-     });
-  };
+  // const handlePrint = () => {
+  //    return generatePDF(printableRef, {
+  //      filename: `${documentTitle || "resume"}.pdf`,
+  //      resolution: Resolution.MEDIUM,
+  //      page: {
+  //        margin: Margin.LARGE,
+  //      },
+  //    });
+  // };
 
   const syncContent = () => {
     if (textareaRef.current) {
@@ -69,7 +70,7 @@ export function PdfSection({
     <div {...props}>
       <PrintableComponent
         ref={printableRef}
-        className="w-full bg-white p-4 min-h-full h-auto"
+        className="w-full bg-white p-4 min-h-full h-auto printableComponent"
       >
         <div className="w-full h-full flex justify-center py-4 text-left">
           {viewRaw ? (
