@@ -9,6 +9,21 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "QuickCv - A simple AI CV builder",
   description: "Generated your next ATS friendly CV with QuickCv",
+  openGraph: {
+    title: "QuickCv - A simple AI CV builder",
+    description: "Generated your next ATS friendly CV with QuickCv",
+    type: "website",
+    url: "https://quickcv.me",
+    siteName: 'QuickCv - A simple AI CV builder',
+    images: [
+      {
+        url: "https://quickcv.me/quickcv-banner.png",
+        width: 1500,
+        height: 500,
+        alt: "QuickCv - A simple AI CV builder",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
