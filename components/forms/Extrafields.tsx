@@ -1,7 +1,7 @@
-"use client";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input, TextArea } from "@/components/forms/inputs";
 import type { Education, Experience, Project, Social } from "@/app/actions";
+import { newNotification } from "@/helpers/commons/client";
 
 export type GroupField<Name = string> = {
   type:
@@ -28,33 +28,22 @@ type FieldProps<T> = {
   fields: GroupField[];
   onChange?: (data: T[]) => void;
   defaultValues?: T[];
+  allowEdit?: boolean;
+  onErrors?: (errors: string[]) => void;
 };
-
-export function Fields<T>({
-  name,
-  fields,
-  onChange,
-  defaultValues = [],
-}: FieldProps<T>) {
-  return (
-    <MultipleGroupFields<T>
-      fields={fields}
-      name={name}
-      onChange={onChange}
-      defaultValues={defaultValues}
-    />
-  );
-}
 
 function MultipleGroupFields<T>({
   fields,
   onChange,
   name,
   defaultValues = [],
+  allowEdit = true,
+  onErrors,
 }: FieldProps<T>) {
   const [groupData, setGroupData] = useState<T[]>(defaultValues);
   const [currentData, setCurrentData] = useState<T>({} as T);
   const [errors, setErrors] = useState<string[]>([]);
+  const [editIndex, setEditIndex] = useState<number | null>(null);
 
   useEffect(() => {
     setGroupData(defaultValues);
@@ -72,6 +61,7 @@ function MultipleGroupFields<T>({
   const validateGroupData = () => {
     const newErrors: string[] = [];
     fields.forEach((field) => {
+      console.log(field, currentData[field.name as keyof T]);
       if (field.required && !currentData[field.name as keyof T]) {
         newErrors.push(`${field.label} is required.`);
       }
@@ -80,16 +70,37 @@ function MultipleGroupFields<T>({
     return newErrors.length === 0;
   };
 
-  const addGroup = () => {
+  const addOrUpdateGroup = () => {
     if (validateGroupData()) {
-      setGroupData((prevData) => [...prevData, currentData]);
-      setCurrentData({} as T);
-      if (onChange) {
-        onChange([...groupData, currentData]);
+      if (editIndex !== null) {
+        setGroupData(prevData => {
+          prevData[editIndex] = currentData;
+          return prevData;
+        });
+      } else {
+        setGroupData((prevData) => [...prevData, currentData]);
       }
-      setErrors([]);
+      setCurrentData({} as T);
     }
   };
+
+  useEffect(() => {
+    if (onErrors) {
+      onErrors(errors);
+    }
+    // set timeout to clear errors after 5 seconds
+    const timeout = setTimeout(() => {
+      setErrors([]);
+    }, 5000);
+    return () => clearTimeout(timeout);
+  }, [errors]);
+
+  useEffect(() => {
+    console.log(groupData, "something changed");
+    if (onChange) {
+      onChange(groupData);
+    }
+  }, [groupData]);
 
   const removeGroup = (index: number) => {
     const updatedData = groupData.filter((_, i) => i !== index);
@@ -97,12 +108,29 @@ function MultipleGroupFields<T>({
     if (onChange) {
       onChange(updatedData);
     }
+    if (editIndex === index) {
+      setEditIndex(null);
+      setCurrentData({} as T);
+    }
+  };
+
+  const editGroup = (index: number) => {
+    if (allowEdit) {
+      setCurrentData(groupData[index]);
+      setEditIndex(index);
+    }
+  };
+
+  const cancelEdit = () => {
+    setCurrentData({} as T);
+    setEditIndex(null);
+    setErrors([]);
   };
 
   const renderField = (field: GroupField) => {
     const value = (currentData as any)[field.name] || "";
     const isRequired = field.required ? "required" : "";
-    delete field.required;
+    // delete field.required;
 
     switch (field.type) {
       case "select":
@@ -149,8 +177,7 @@ function MultipleGroupFields<T>({
     <div className="flex flex-col items-center justify-center space-y-4 w-full">
       <h2 className="text-lg font-semibold text-left w-full">{name}</h2>
 
-      {/* Display error messages */}
-      {errors.length > 0 && (
+      {errors.length > 0 && !onErrors && (
         <div className="text-red-500 mb-4">
           {errors.map((error, index) => (
             <p key={index}>{error}</p>
@@ -158,7 +185,6 @@ function MultipleGroupFields<T>({
         </div>
       )}
 
-      {/* Input fields for new group */}
       {fields.map((field, index) => (
         <div key={index} className="w-full">
           {renderField(field)}
@@ -166,15 +192,23 @@ function MultipleGroupFields<T>({
       ))}
       <div className="w-full">
         <button
-          onClick={addGroup}
-          className="bg-green-500 text-white px-4 py-2 rounded"
+          onClick={addOrUpdateGroup}
+          className="bg-green-500 text-white px-4 py-2 rounded mr-2"
           type="button"
-          >
-          Add {name}
+        >
+          {editIndex !== null ? `Update ${name}` : `Add ${name}`}
         </button>
+        {editIndex !== null && (
+          <button
+            onClick={cancelEdit}
+            className="bg-gray-500 text-white px-4 py-2 rounded"
+            type="button"
+          >
+            Cancel
+          </button>
+        )}
       </div>
 
-      {/* Display existing groups */}
       {groupData.map((group, index) => (
         <div key={index} className="w-full p-4 border rounded mt-4">
           {fields.map((field, fieldIndex) => (
@@ -182,16 +216,47 @@ function MultipleGroupFields<T>({
               <strong>{field.label}:</strong> {(group as any)[field.name]}
             </p>
           ))}
-          <button
-            onClick={() => removeGroup(index)}
-            className="bg-red-500 text-white px-2 py-1 rounded mt-2"
-            type="button"
-          >
-            Remove
-          </button>
+          <div className="mt-2">
+            {allowEdit && (
+              <button
+                onClick={() => editGroup(index)}
+                className="bg-blue-500 text-white px-2 py-1 rounded mr-2"
+                type="button"
+              >
+                Edit
+              </button>
+            )}
+            <button
+              onClick={() => removeGroup(index)}
+              className="bg-red-500 text-white px-2 py-1 rounded"
+              type="button"
+            >
+              Remove
+            </button>
+          </div>
         </div>
       ))}
     </div>
+  );
+}
+
+export function Fields<T>({
+  name,
+  fields,
+  onChange,
+  defaultValues = [],
+  allowEdit = true,
+  onErrors
+}: FieldProps<T>) {
+  return (
+    <MultipleGroupFields<T>
+      fields={fields}
+      name={name}
+      onChange={onChange}
+      defaultValues={defaultValues}
+      allowEdit={allowEdit}
+      onErrors={onErrors ?? ((errors) => errors.forEach((error) => newNotification(error, "error")))}
+    />
   );
 }
 
@@ -330,7 +395,6 @@ export function SocialMultipleFields({
     />
   );
 }
-
 
 // for project fields
 export function ProjectFields({

@@ -24,7 +24,14 @@ import {
   newNotification,
   RememberInfo,
 } from "@/helpers/commons/client";
-import { Next, Previous, Repeat, Send2 } from "iconsax-react";
+import { ArrowDown2, Next, Previous, Repeat, Send2 } from "iconsax-react";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionItemHeading,
+  AccordionItemButton,
+  AccordionItemPanel,
+} from "react-accessible-accordion";
 
 export default function ResumeBuilder() {
   const [resumeInfo, setResumeInfo] = useState<BasicResumeInfo | null>(null);
@@ -82,8 +89,7 @@ export default function ResumeBuilder() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    if (!name || !value) return;
-    if (value === "") return;
+    if (!name) return;
     console.log(name, value, resumeInfo, "name and value from input change");
     setResumeInfo((prev) => ({ ...prev, [name]: value } as BasicResumeInfo));
     // setRawContent("# Heading One (H2");
@@ -204,62 +210,102 @@ export default function ResumeBuilder() {
           className="flex flex-col items-center justify-center space-y-4 w-full"
           onSubmit={handleSubmit}
         >
-          {fields.map((field, index) => {
-            return field?.type !== "textarea" ? (
-              <Input
-                key={index}
-                {...field}
-                onChange={handleInputChange}
-                value={`${resumeInfo?.[field.name] ?? ""}`}
-              />
-            ) : (
-              <TextArea
-                key={index}
-                {...field}
-                onChange={handleInputChange}
-                value={`${resumeInfo?.[field.name] ?? ""}`}
-              />
-            );
-          })}
-          <div className="w-full mb-4">
-            <SocialMultipleFields
-              onChange={handleSocalInputChange}
-              defaultValues={resumeInfo?.social}
-            />
-          </div>
+          <Accordion
+            allowZeroExpanded
+            className="w-full flex flex-col space-y-4"
+            preExpanded={["personal-information"]}
+          >
+            <AccordionItem className="w-full" uuid="personal-information">
+              <AccordionItemHeading className="w-full">
+                <AccordionItemButton className="w-full h-12 bg-green-500 text-white flex items-center justify-between px-4">
+                  Personal Information <ArrowDown2 />
+                </AccordionItemButton>
+              </AccordionItemHeading>
+              <AccordionItemPanel className="w-full py-4 space-y-4">
+                {fields.map((field, index) => {
+                  return field?.type !== "textarea" ? (
+                    <Input
+                      key={index}
+                      {...field}
+                      onChange={handleInputChange}
+                      value={`${resumeInfo?.[field.name] ?? ""}`}
+                    />
+                  ) : (
+                    <TextArea
+                      key={index}
+                      {...field}
+                      onChange={handleInputChange}
+                      value={`${resumeInfo?.[field.name] ?? ""}`}
+                    />
+                  );
+                })}
+              </AccordionItemPanel>
+            </AccordionItem>
+            <AccordionItem className="w-full" uuid="social-information">
+              <AccordionItemHeading className="w-full">
+                <AccordionItemButton className="w-full h-12 bg-green-500 text-white flex items-center justify-between px-4">
+                  Social Information <ArrowDown2 />
+                </AccordionItemButton>
+              </AccordionItemHeading>
+              <AccordionItemPanel className="w-full py-4">
+                <SocialMultipleFields
+                  onChange={handleSocalInputChange}
+                  defaultValues={resumeInfo?.social}
+                />
+              </AccordionItemPanel>
+            </AccordionItem>
+            <AccordionItem className="w-full" uuid="education-information">
+              <AccordionItemHeading className="w-full">
+                <AccordionItemButton className="w-full h-12 bg-green-500 text-white flex items-center justify-between px-4">
+                  Education Information <ArrowDown2 />
+                </AccordionItemButton>
+              </AccordionItemHeading>
+              <AccordionItemPanel className="w-full py-4">
+                <EducationFields
+                  onChange={handleEducationChange}
+                  defaultValues={resumeInfo?.education}
+                />
+              </AccordionItemPanel>
+            </AccordionItem>
+            <AccordionItem className="w-full" uuid="experience-information">
+              <AccordionItemHeading className="w-full">
+                <AccordionItemButton className="w-full h-12 bg-green-500 text-white flex items-center justify-between px-4">
+                  Experience Information <ArrowDown2 />
+                </AccordionItemButton>
+              </AccordionItemHeading>
+              <AccordionItemPanel className="w-full py-4">
+                <ExperienceFields
+                  onChange={handleExperienceChange}
+                  defaultValues={resumeInfo?.experience}
+                />
+              </AccordionItemPanel>
+            </AccordionItem>
+            <AccordionItem className="w-full" uuid="project-information">
+              <AccordionItemHeading className="w-full">
+                <AccordionItemButton className="w-full h-12 bg-green-500 text-white flex items-center justify-between px-4">
+                  Project Information <ArrowDown2 />
+                </AccordionItemButton>
+              </AccordionItemHeading>
+              <AccordionItemPanel className="w-full py-4">
+                <ProjectFields
+                  onChange={handleProjectChange}
+                  defaultValues={resumeInfo?.projects}
+                />
+              </AccordionItemPanel>
+            </AccordionItem>
 
-          <div className="w-full mb-4">
-            <EducationFields
-              onChange={handleEducationChange}
-              defaultValues={resumeInfo?.education}
-            />
-          </div>
-
-          <div className="w-full mb-4">
-            <ExperienceFields
-              onChange={handleExperienceChange}
-              defaultValues={resumeInfo?.experience}
-            />
-          </div>
-
-          {/* for projects */}
-          <div className="w-full mb-4">
-            <ProjectFields
-              onChange={handleProjectChange}
-              defaultValues={resumeInfo?.projects}
-            />
-          </div>
-          <div className="w-full mb-4">
-            <button
-              type="submit"
-              disabled={generatingState}
-              className={`${
-                generatingState ? "bg-green-100" : "bg-green-500"
-              } text-white p-2 rounded`}
-            >
-              {generatingState ? "Loading..." : <Send2 />}
-            </button>
-          </div>
+            <div className="w-full mb-4">
+              <button
+                type="submit"
+                disabled={generatingState}
+                className={`${
+                  generatingState ? "bg-green-100" : "bg-green-500"
+                } text-white p-2 rounded`}
+              >
+                {generatingState ? "Loading..." : <Send2 />}
+              </button>
+            </div>
+          </Accordion>
         </form>
       </div>
       <div className="w-full sm:w-1/2 h-svh">
