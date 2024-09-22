@@ -82,8 +82,7 @@ export default function ResumeBuilder() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    if (!name || !value) return;
-    if (value === "") return;
+    if (!name) return;
     console.log(name, value, resumeInfo, "name and value from input change");
     setResumeInfo((prev) => ({ ...prev, [name]: value } as BasicResumeInfo));
     // setRawContent("# Heading One (H2");
