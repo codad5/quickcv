@@ -46,6 +46,7 @@ export const Input = forwardRef<HTMLInputElement, { label?: string  |false | Cus
                     {...props}
                     className={`border border-gray-300 rounded px-2 py-1 text-black placeholder-black inverse-color flex-grow ${props.className}`}
                     ref={ref}
+                    required={false}
                 />
             </div>
         </div>
@@ -55,19 +56,19 @@ export const Input = forwardRef<HTMLInputElement, { label?: string  |false | Cus
 // TextArea component
 export const TextArea = forwardRef<HTMLTextAreaElement, { label?: string | CustomLabelProps } & React.TextareaHTMLAttributes<HTMLTextAreaElement>>(({ label, ...props }, ref) => {
     return (
-        <div className="flex flex-col w-full gap-2">
-            {label && typeof label === 'string' ? (
-                <Label text={label} htmlFor={props.id} />
-            ) : label && typeof label !== 'string' ? (
-                <Label text={label.text || ''} {...label} htmlFor={props.id} />
-            ) : null}
-            <textarea
-                {...props}
-                className={`border border-gray-300 rounded px-2 py-1 w-full text-black placeholder-black inverse-color min-h-[200px] h-fit ${props.className}`}
-                ref={ref}
-
-            />
-        </div>
+      <div className="flex flex-col w-full gap-2">
+        {label && typeof label === "string" ? (
+          <Label text={label} htmlFor={props.id} />
+        ) : label && typeof label !== "string" ? (
+          <Label text={label.text || ""} {...label} htmlFor={props.id} />
+        ) : null}
+        <textarea
+          {...props}
+          className={`border border-gray-300 rounded px-2 py-1 w-full text-black placeholder-black inverse-color min-h-[200px] h-fit ${props.className}`}
+          ref={ref}
+          required={false}
+        />
+      </div>
     );
 });
 
