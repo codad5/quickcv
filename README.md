@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# QuickCv
+URL : [quickcv](https://quickcv.codad5.me/)
 
-## Getting Started
+## Description
+QuickCv is a web application that allows users to create a resume in a few minutes with the help of AI, the user can create a high scoring ATS resume in a few minutes.
 
-First, run the development server:
+## How it works
+1. User opens the website
+2. User fills in the form with their details
+3. User clicks on the generate button
+4. The AI generates a resume for the user in a markdown format
+5. The markdown is converted to a HTML and displayed to the user
+6. When user is satisfied with the resume, they can print it using the print button.
+7. Some basic styling is added to the resume to make it look good
+8. This HTML would be converted to a PDF by the browser and the user can save it to their device
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features
+- [x] User can create a resume in a few minutes
+- [x] User can print the resume
+- [x] Multi Section resume
+    - [x] Personal Information
+    - [x] Socials
+    - [x] Education
+    - [x] Work Experience
+    - [x] Skills
+    - [x] Projects
+- [x] User can regenerate the resume if they are not satisfied
+- [x] User can see previous resumes they have generated
+- [x] Auto save feature locally
+- [x] No need to sign up to use the app
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Technologies Used
+- Next.js
+- Tailwind CSS
+- Groq.ai
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## How to run
+1. Clone the repository
+2. Run `npm install` in the project directory
+3. copy the `.env.sample` file to `.env.local` and fill in the required details
+4. Run `npm run dev` to start the development server
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## License
+This project is licensed under a custom license based on the **AGPL-3.0**. See [LICENSE.md](LICENSE.md) for details.
 
-## Learn More
+## Contributing
+1. Fork the repository
+2. Clone the repository
+3. Create a new branch
+4. Make your changes
+5. Push your changes
+6. Create a pull request
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Author
+- [Chibueze Aniezeofor](https://codad5.me)

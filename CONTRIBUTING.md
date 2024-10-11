@@ -1,87 +1,66 @@
+# Contributing to QuickCv
 
-# Contribution Guidelines
-
-Thank you for considering contributing to **QuickCV**! Your help is greatly appreciated. This document provides guidelines for contributing to the project.
-
-## Table of Contents
-
-1. [Getting Started](#getting-started)
-2. [How to Contribute](#how-to-contribute)
-3. [Coding Guidelines](#coding-guidelines)
-4. [Commit Messages](#commit-messages)
-5. [Pull Request Process](#pull-request-process)
-6. [Code of Conduct](#code-of-conduct)
-
-## Getting Started
-
-1. **Fork the repository**: Fork the [QuickCV repository](https://github.com/codad5/quickcv) to your GitHub account.
-2. **Clone your fork**: Clone the forked repository to your local machine.
-   ```sh
-   git clone https://github.com/<your-username>/quickcv.git
-   cd quickcv
-   ```
-3. **Install dependencies**: Install the necessary dependencies using npm or yarn.
-   ```sh
-   npm install
-   # or
-   yarn install
-   ```
-4. **Start the development server**: Run the development server to ensure everything is set up correctly.
-   ```sh
-   npm run dev
-   # or
-   yarn dev
-   ```
+Thank you for considering contributing to QuickCv! We appreciate your help in making this project better. Below are the guidelines for contributing to this project.
 
 ## How to Contribute
 
-1. **Report Bugs**: If you find a bug, please create an issue with detailed information about the bug and how to reproduce it.
-2. **Suggest Features**: If you have an idea for a new feature, please create an issue or open a discussion to discuss your idea.
-3. **Code Contributions**: If you want to contribute code, please follow the steps below.
+1. **Fork the repository**
+   - Fork the QuickCv repository to your GitHub account.
 
-## Coding Guidelines
+2. **Clone your forked repository**
+   - Clone the repository to your local machine:
+     ```bash
+     git clone https://github.com/codad5/quickcv.git
+     ```
 
-1. **Code Style**: Follow the coding style of the existing codebase. Use ESLint and Prettier to ensure consistent code formatting.
-2. **Components**: Break down your code into reusable components. Organize and store them properly.
-3. **Typescript**: Use TypeScript for type safety and to improve code quality.
-4. **CSS**: If not using CSS frameworks like Tailwind, keep class names concise and use CSS variables for easy maintenance.
+3. **Create a new branch for your changes**
+   - Name your branch descriptively (e.g., `fix-validation-error`, `add-new-feature`):
+     ```bash
+     git checkout -b your-branch-name
+     ```
 
-## Commit Messages
+4. **Make your changes**
+   - Ensure that your changes are well-structured and follow the coding standards of the project.
 
-Write brief yet descriptive commit messages. Use the format:
+5. **Commit your changes**
+   - Write clear, meaningful commit messages in the following format:
+     ```bash
+     [change-type]: your message
+     ```
+     Example:
+     ```bash
+     [feat]: added certificate field in the resume generator
+     ```
+     - **Change types**:
+       - `feat` : For new features
+       - `fix` : For bug fixes
+       - `docs` : For documentation updates
+       - `style` : For formatting changes
+       - `refactor` : Code changes that neither fix a bug nor add a feature
+       - `test` : Adding or updating tests
+       - `chore` : Maintenance tasks, such as updating dependencies
 
-```
-[<change-type>: <message>]
-```
+6. **Push to your forked repository**
+   - Push your changes:
+     ```bash
+     git push origin your-branch-name
+     ```
 
-Examples of `<change-type>` include but are not limited to:
+7. **Submit a pull request**
+   - Open a pull request from your forked repository to the main repository.
 
-- `bug-fix`: Fixes a bug
-- `feat`: Adds a new feature
-- `revision`: Refactors existing code
-- `improvement`: Improves existing functionality
+8. **Wait for a review**
+   - We will review your pull request and may request changes. Please be patient as we get to your submission.
 
-## Pull Request Process
+## Reporting Issues
 
-1. **Create a Branch**: Create a new branch for your work.
-   ```sh
-   git checkout -b feature/my-feature
-   ```
-2. **Commit Changes**: Commit your changes with clear and descriptive commit messages.
-3. **Push to GitHub**: Push your changes to your forked repository.
-   ```sh
-   git push origin feature/my-feature
-   ```
-4. **Create a Pull Request**: Open a pull request to the `main` branch of the original repository. Provide a clear description of your changes and link to any relevant issues.
+- If you find any bugs or have feature requests, please open an issue on GitHub.
+- Make sure the issue hasn't already been reported by searching through existing issues.
 
-## Code of Conduct
+## Coding Standards
 
-Please read and follow our [Code of Conduct](CODE_OF_CONDUCT.md). We expect all contributors to adhere to it.
+- Follow the existing style of the codebase.
+- Use meaningful variable and function names.
+- Keep the code clean and organized.
 
----
-
-Thank you for your contributions! Together, we can make **QuickCV** an even better project.
-
-Best regards,  
-Chibueze Aniezeofor ([@codad5](https://github.com/codad5))
-
+Thank you for contributing!
