@@ -39,7 +39,7 @@ export default function RootLayout({
         <Next13NProgress color="#10B981" height={5} />
         <header className="w-full shadow-md flex items-center justify-between px-4 py-6">
           <h1 className="text-lg font-semibold">
-            QuickCv
+            <Link href="/">QuickCv</Link>
             {/* a credit with link to my github something that is small and say by codad5 then with link to my portfolio codad5.me */}
             <span className="text-sm ml-2">
               by{" "}
