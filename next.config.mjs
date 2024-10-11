@@ -7,11 +7,7 @@ const nextConfig = {
     },
     async redirects() {
         return [
-            {
-                source: '/',
-                destination: '/resume-generator',
-                permanent: true,
-            },
+            
         ]
     }
 };

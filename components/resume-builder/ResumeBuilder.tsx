@@ -141,7 +141,7 @@ export default function ResumeBuilder() {
       console.error(error);
       newNotification((error as Error).message, "error");
     }
-  }, [retryCount]);
+  }, [retryCount, resumeInfo]);
 
   const generateResumeContent = async () => {
     try {

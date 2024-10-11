@@ -1,5 +1,5 @@
 # QuickCv
-URL : [quickcv](https://quickcv.codad5.me/)
+URL : [quickcv.codad5.me](https://quickcv.codad5.me/)
 
 ## Description
 QuickCv is a web application that allows users to create a resume in a few minutes with the help of AI, the user can create a high scoring ATS resume in a few minutes.
@@ -27,6 +27,7 @@ QuickCv is a web application that allows users to create a resume in a few minut
 - [x] User can regenerate the resume if they are not satisfied
 - [x] User can see previous resumes they have generated
 - [x] Auto save feature locally
+- [x] Remembers user details (all data is stored locally)
 - [x] No need to sign up to use the app
 
 ## Technologies Used
