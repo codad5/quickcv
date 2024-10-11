@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react"
 import NotificationComponent from "@/components/commons/Notification";
+import { Next13NProgress, Link } from "nextjs13-progress";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,6 +35,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        {/* light green */}
+        <Next13NProgress color="#10B981" height={5} />
         <header className="w-full shadow-md flex items-center justify-between px-4 py-6">
           <h1 className="text-lg font-semibold">
             QuickCv
@@ -62,10 +65,10 @@ export default function RootLayout({
           <nav>
             <ul className="flex space-x-4">
               <li>
-                <a href="/about">About</a>
+                <Link href="/about">About</Link>
               </li>
               <li>
-                <a href="/contact">Contact</a>
+                <Link href="/contact">Contact</Link>
               </li>
             </ul>
           </nav>
