@@ -1,3 +1,4 @@
+import { HeroSectionProgressBarSection } from "@/components/commons/herosection";
 import SamplePDF from "@/components/pdf/sample-pdf";
 import { Inter } from "next/font/google";
 import { Link } from "nextjs13-progress";
@@ -28,6 +29,9 @@ export default function Home() {
       </div>
       <div className="pdf-sample-section w-full relative pt-16 overflow-hidden">
         <SamplePDF />
+        <div className="absolute top-16 right-20">
+          <HeroSectionProgressBarSection />
+        </div>
       </div>
     </div>
   );
