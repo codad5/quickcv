@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Analytics } from "@vercel/analytics/react"
+import { Analytics } from "@vercel/analytics/react";
 import NotificationComponent from "@/components/commons/Notification";
-import { Next13NProgress, Link } from "nextjs13-progress";
 import Header from "@/components/commons/header";
 
 const inter = Inter({ subsets: ["latin"] });
-
 
 export const metadata: Metadata = {
   title: "QuickCv - A simple AI CV builder",
@@ -17,7 +15,7 @@ export const metadata: Metadata = {
     description: "Generated your next ATS friendly CV with QuickCv",
     type: "website",
     url: "https://quickcv.me",
-    siteName: 'QuickCv - A simple AI CV builder',
+    siteName: "QuickCv - A simple AI CV builder",
     images: [
       {
         url: "https://quickcv.me/quickcv-banner.png",
@@ -36,11 +34,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-deep-blue text-light-gray min-h-dvh relative`}>
-        <Next13NProgress color="#3DD973" height={5} />
+      <body
+        className={`${inter.className} w-dvw bg-deep-blue text-light-gray h-dvh flex flex-col relative overflow-x-hidden md:overflow-x-visible`}
+      >
         <Header />
-        {/* {children} */}
-        <main className="w-full grid place-items-center px-10">
+        <main className="w-full flex-grow grid place-items-center px-10">
           {children}
         </main>
         <Analytics />
