@@ -40,7 +40,7 @@ export default function RootLayout({
         <Next13NProgress color="#3DD973" height={5} />
         <Header />
         {/* {children} */}
-        <main>
+        <main className="w-full grid place-items-center px-10">
           {children}
         </main>
         <Analytics />

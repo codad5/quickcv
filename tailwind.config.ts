@@ -8,6 +8,14 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      textShadow: {
+        "blue-h2": "15px 15px 4px #031CA6", // Custom shadow for h1 and h2
+        "subtle": "1px 1px 2px rgba(0, 0, 0, 0.1)", // Light shadow
+        "strong": "3px 3px 5px rgba(0, 0, 0, 0.3)", // Strong shadow
+      },
+      dropShadow: {
+        "action-button": "15px 15px 4px #031CA6", // Shadow for action buttons
+      },
       colors: {
         "deep-blue": "#010326", // Background color
         "light-gray": "#D9D9D9", // Main text color
@@ -37,7 +45,7 @@ const config: Config = {
     },
   },
   plugins: [
-    require('@tailwindcss/typography'),
+    require('@tailwindcss/typography')
   ],
 };
 
