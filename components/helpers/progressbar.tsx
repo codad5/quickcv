@@ -35,6 +35,7 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
           strokeDashoffset={offset}
           strokeLinecap="round"
           className="transition-all duration-500"
+          transform="rotate(-90 60 60)"
         />
         <text
           x="50%"

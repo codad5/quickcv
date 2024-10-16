@@ -8,15 +8,15 @@ export function HeroSectionProgressBarSection() {
   const TOTAL_TIME = 8000; // Time in milliseconds for each step
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= MAX_PROGRESS) {
-          clearInterval(interval);
-          return MAX_PROGRESS;
-        }
-        return prev + 1; 
-      });
-    }, TOTAL_TIME/85);
+      const interval = setInterval(() => {
+          setProgress((prev) => {
+              if (prev >= MAX_PROGRESS) {
+                  clearInterval(interval);
+                  return MAX_PROGRESS;
+              }
+              return prev + 1;
+          });
+      }, TOTAL_TIME / 85 * 0.7);
 
     return () => {
       clearInterval(interval);
