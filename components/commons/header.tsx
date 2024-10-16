@@ -1,4 +1,5 @@
 import { Link, Next13NProgress } from "nextjs13-progress";
+import MobileNav from "./mobile-nav";
 
 const navLinks = [
     {
@@ -22,7 +23,8 @@ export default function Header() {
                 <Link href="/">QuickCv</Link>
               </h1>
             </div>
-            <nav className="flex items-center">
+            {/* show only on large screen and not on phones */}
+            <nav className="items-center hidden md:flex">
               {navLinks.map((navLink, index) => (
                 <Link
                   key={index}
@@ -33,6 +35,8 @@ export default function Header() {
                 </Link>
               ))}
             </nav>
+            {/* mobile nav */}
+            <MobileNav navLinks={navLinks} />
           </div>
         </div>
       </header>

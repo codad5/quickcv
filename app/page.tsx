@@ -31,7 +31,7 @@ export default function Home() {
         </div>
       </div>
       <div className="pdf-sample-section w-full relative pt-16 overflow-hidden flex-grow">
-        <SamplePDF />
+        {/* <SamplePDF /> */}
         <div className="absolute top-16 right-20">
           <HeroSectionProgressBarSection />
         </div>
