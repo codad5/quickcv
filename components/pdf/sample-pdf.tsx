@@ -63,7 +63,7 @@ export default function SamplePDF() {
   }, []);
 
   return (
-    <div className="pdf-sample w-[760px] max-w-full mx-auto h-[590px] max-h-1/2 bg-white px-6 py-10">
+    <div className="pdf-sample w-[760px] max-w-full mx-auto h-[590px] max-h-1/2 bg-white px-6 py-10 overflow-hidden">
       <Markdown
         remarkPlugins={[remarkGfm]}
         className="prose prose-lg prose-zinc w-full max-w-none"
