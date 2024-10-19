@@ -14,7 +14,7 @@ const navLinks = [
 
 export default function Header() {
     return (
-      <header className="w-full grid place-items-center px-10 py-8">
+      <header className="w-full grid place-items-center md:px-10 px-3 md:py-8 py-5">
         <Next13NProgress color="#3DD973" height={5} />
         <div className="w-full bg-deep-blue-opacity rounded-full h-[100px] px-11">
           <div className="w-full h-full flex justify-between">

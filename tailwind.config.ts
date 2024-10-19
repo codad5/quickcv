@@ -36,7 +36,8 @@ const config: Config = {
         "green-light": "#3DD973", // Lighter green for variations
         "blue-dark": "#031CA6", // Darker shade of blue for variants
         "black-opacity": "rgba(0, 0, 0, 0.46)", // 46% opacity black
-        "deep-blue-opacity": "rgba(1, 4, 64, 0.45)"// 58% opacity deep blue
+        "deep-blue-opacity": "rgba(1, 4, 64, 0.45)",// 58% opacity deep blue
+        "deep-blue-opacity-2": "rgba(1, 4, 64, 0.90)"// 58% opacity deep blue
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

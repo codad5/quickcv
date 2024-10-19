@@ -35,10 +35,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} w-dvw bg-deep-blue text-light-gray h-dvh flex flex-col relative overflow-x-hidden md:overflow-x-visible`}
+        className={`${inter.className} w-dvw bg-deep-blue text-light-gray h-max flex flex-col relative overflow-x-auto md:overflow-x-visible`}
       >
         <Header />
-        <main className="w-full flex-grow grid place-items-center px-10">
+        <main className="w-full h-max max-w-vw flex-grow grid place-items-center px-3  md:px-10 overflow-x-auto">
           {children}
         </main>
         <Analytics />

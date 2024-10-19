@@ -2,8 +2,8 @@
 
 import { CloseSquare, HambergerMenu } from "iconsax-react";
 import { useState } from "react";
-import Link from "next/link";
 import { NavLink } from "@/components/types";
+import { Link } from "nextjs13-progress";
 
 interface MobileNavProps {
   navLinks: NavLink[];
@@ -13,22 +13,24 @@ export default function MobileNav({ navLinks }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="grid place-items-center items-center md:hidden">
+    <div className="grid place-items-center items-center md:hidden z-50">
       <HambergerMenu
         onClick={() => setIsOpen(true)}
         className="cursor-pointer"
       />
       <div
-        className={`fixed top-0 right-0 h-full w-64 bg-deep-blue-opacity transition-transform duration-300 ease-in-out transform ${
+        className={`fixed top-0 right-0 h-full w-dvw bg-deep-blue-opacity-2 transition-transform duration-300 ease-in-out transform ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="p-5">
-          <CloseSquare 
-            onClick={() => setIsOpen(false)}
-            className="text-white text-2xl mb-5"
-          />
-          <nav className="flex flex-col">
+        <div className="w-full h-full py-5 px-12 flex flex-col justify-between place-items-end">
+          <div className="h-[100px] w-full flex justify-end place-items-center">
+            <CloseSquare
+              onClick={() => setIsOpen(false)}
+              className="text-white"
+            />
+          </div>
+          <nav className="flex flex-col w-full flex-grow place-items-end">
             {navLinks.map((navLink, index) => (
               <Link
                 key={index}
