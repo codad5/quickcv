@@ -195,7 +195,7 @@ function MultipleGroupFields<T>({
 
       {isModalOpen && (
         <div className="grid place-items-center fixed inset-0 w-svw h-svh bg-light-gray-opacity-2 py-4 z-30">
-          <div className="px-10 py-12 bg-deep-blue max-h-96 overflow-y-scroll">
+          <div className="px-10 py-12 bg-deep-blue max-h-[800px] overflow-y-auto rounded-3xl flex flex-col gap-4">
             {fields.map((field, index) => (
               <div key={index} className="w-full">
                 {renderField(field)}
@@ -256,7 +256,6 @@ function MultipleGroupFields<T>({
         </div>
       ))}
       <div className="add-btn w-full text-left">
-
         <div className="bg-shadow-blue px-7 py-4 rounded-full w-24">
           <Add
             onClick={openModal}
@@ -398,8 +397,8 @@ export function SocialMultipleFields({
   onChange,
   defaultValues = [],
 }: {
-  onChange?: (data: { [key: string]: string }[]) => void;
-  defaultValues?: { [key: string]: string }[];
+  onChange?: (data:  Social[]) => void;
+  defaultValues?: Social[];
 }) {
   const fields: GroupField<keyof Social>[] = [
     {
@@ -418,7 +417,7 @@ export function SocialMultipleFields({
     },
   ];
   return (
-    <Fields<{ [key: string]: string }>
+    <Fields<Social>
       fields={fields}
       name="Socials"
       onChange={onChange}
@@ -432,8 +431,8 @@ export function ProjectFields({
   onChange,
   defaultValues = [],
 }: {
-  onChange?: (data: { [key: string]: string }[]) => void;
-  defaultValues?: { [key: string]: string }[];
+  onChange?: (data: Project[]) => void;
+  defaultValues?: Project[];
 }) {
   const fields: GroupField<keyof Project>[] = [
     {
@@ -471,7 +470,7 @@ export function ProjectFields({
     },
   ];
   return (
-    <Fields<{ [key: string]: string }>
+    <Fields<Project>
       fields={fields}
       name="Project"
       onChange={onChange}
