@@ -30,12 +30,12 @@ export default function MobileNav({ navLinks }: MobileNavProps) {
               className="text-white"
             />
           </div>
-          <nav className="flex flex-col w-full flex-grow place-items-end">
+          <nav className="flex flex-col w-full flex-grow place-items-end space-y-1">
             {navLinks.map((navLink, index) => (
               <Link
                 key={index}
                 href={navLink.url}
-                className="text-white text-xl py-2"
+                className="text-white text-xl py-2 border-r-2 border-r-white px-4 after:bg-white after:rounded-full after:w-3 after:h-3 relative after:absolute after:-right-1.5 after:top-1/2 after:-translate-y-1/2"
                 onClick={() => setIsOpen(false)}
               >
                 {navLink.title}
