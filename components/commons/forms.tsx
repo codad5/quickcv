@@ -1,10 +1,12 @@
 "use client";
-import { BasicResumeInfo } from "@/app/actions";
+import { BasicResumeInfo, Education, Experience, generateResume } from "@/app/actions";
 import { Briefcase, Link1, Profile, Send2, Setting2, Teacher } from "iconsax-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { EducationFields, ExperienceFields, ProjectFields, SocialMultipleFields } from "../forms/Extrafields";
 import { fields } from "@/helpers/resume-builder/fields";
 import { Input, TextArea } from "../forms/inputs";
+import { getRememberInfo, RememberInfo, APPToRemember, newNotification, decrementCreditEvent, ForgetInfo } from "@/helpers/commons/client";
+import { readStreamableValue } from "ai/rsc";
 
 type TabComponent = (props: { resumeInfo: BasicResumeInfo | null, handleChange: (data: BasicResumeInfo[string]) => void }) => JSX.Element;
 
@@ -114,8 +116,173 @@ function ProjectSection({
 
 
 export default function Forms() {
-  const [resumeInfo, setResumeInfo] = useState<BasicResumeInfo | null>(null);
   const [activeTab, setActiveTab] = useState(0);
+  const [resumeInfo, setResumeInfo] = useState<BasicResumeInfo | null>(null);
+  const [rawContent, setRawContent] = useState<string>("# Heading One (H1)");
+  const [generatedContent, setGeneratedContent] = useState<string[]>([]);
+  const [currentVersionIndex, setCurrentVersionIndex] = useState(0);
+  const [generatingState, setGeneratingState] = useState(false);
+  const [changeMade, setChangeMade] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
+  const [retryCount, setRetryCount] = useState(0);
+
+  useEffect(() => {
+    setChangeMade(true);
+  }, [resumeInfo]);
+
+  useEffect(() => {
+    const resumeInfo = getRememberInfo<BasicResumeInfo>("resumeInfo");
+    if (resumeInfo) {
+      setResumeInfo(resumeInfo);
+      setRememberMe(true);
+    }
+  }, []);
+
+  // set interval to update save data to remember me local storage every 9 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (rememberMe && changeMade) {
+        RememberInfo("resumeInfo", resumeInfo);
+      }
+    }, 9000);
+    return () => clearInterval(interval);
+  }, [resumeInfo, rememberMe]);
+
+  useEffect(() => {
+    // Listen for credit usage updates
+    const handleRememberMeUpdate = (data: { detail: APPToRemember }) => {
+      console.log(data, "remember me update");
+      return setRememberMe(data.detail.resumeInfo ?? false);
+    };
+
+    window.addEventListener(
+      "quickcv:rememberMe" as any,
+      handleRememberMeUpdate
+    );
+
+    return () => {
+      window.removeEventListener(
+        "quickcv:rememberMe" as any,
+        handleRememberMeUpdate
+      );
+    };
+  }, []);
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    if (!name) return;
+    console.log(name, value, resumeInfo, "name and value from input change");
+    setResumeInfo((prev) => ({ ...prev, [name]: value } as BasicResumeInfo));
+    // setRawContent("# Heading One (H2");
+  };
+
+  const handleSocalInputChange = (data: any) => {
+    console.log(data);
+    setResumeInfo((prev) => ({ ...prev, social: data } as BasicResumeInfo));
+  };
+
+  const handleEducationChange = (educationData: Education[]) => {
+    console.log(educationData, "education data");
+    setResumeInfo(
+      (prev) => ({ ...prev, education: educationData } as BasicResumeInfo)
+    );
+  };
+
+  const handleExperienceChange = (educationData: Experience[]) => {
+    console.log(educationData, "education data");
+    setResumeInfo(
+      (prev) => ({ ...prev, experience: educationData } as BasicResumeInfo)
+    );
+  };
+
+  const handleProjectChange = (projectData: any) => {
+    console.log(projectData, "project data");
+    setResumeInfo(
+      (prev) => ({ ...prev, projects: projectData } as BasicResumeInfo)
+    );
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      if (!changeMade) throw new Error("No change made");
+      await generateResumeContent();
+    } catch (error) {
+      console.error(error);
+      newNotification((error as Error).message, "error");
+    }
+  };
+
+  const handleRetry = useCallback(async () => {
+    try {
+      await generateResumeContent();
+      setRetryCount((prev) => prev + 1);
+    } catch (error) {
+      console.error(error);
+      newNotification((error as Error).message, "error");
+    }
+  }, [retryCount, resumeInfo]);
+
+  const generateResumeContent = async () => {
+    try {
+      console.log("submitting form");
+      if (generatingState) throw new Error("Task in place, please wait");
+      if (!resumeInfo) throw new Error("No resume info provided");
+      const message: BasicResumeInfo = {
+        ...resumeInfo,
+        name: resumeInfo.name,
+        email: resumeInfo.email,
+        role: resumeInfo.role,
+      };
+
+      // if message.name , role, email is empty or undefined return
+      if (!message.name || !message.role || !message.email)
+        throw new Error("Name, role and email are required");
+      if (message.name === "" || message.role === "" || message.email === "")
+        throw new Error("Name, role and email are required");
+      setGeneratingState(true);
+      const result = await generateResume(message, retryCount);
+      if (result.status === "error") throw new Error(result.message);
+      for await (const value of readStreamableValue(result.message)) {
+        console.log(value);
+        if (!value) return;
+        setRawContent(value as string);
+      }
+      setGeneratedContent((prev) => [...prev, rawContent]);
+      decrementCreditEvent();
+      setChangeMade(false);
+      newNotification("Resume Generated", "success");
+    } catch (error) {
+      console.error(error);
+      newNotification((error as Error).message, "error");
+    } finally {
+      setGeneratingState(false);
+      console.log("decrementing credit");
+      console.log(rememberMe, "remember me");
+      if (rememberMe) {
+        console.log("remember me, saving to local storage");
+        RememberInfo("resumeInfo", resumeInfo);
+      } else {
+        ForgetInfo("resumeInfo");
+      }
+    }
+  };
+
+  const handleNextVersion = useCallback(() => {
+    console.log("next version", generatedContent, currentVersionIndex);
+    setRetryCount(0); // Reset retry count
+    setCurrentVersionIndex((prev) => prev + 1);
+    setRawContent(generatedContent[currentVersionIndex]);
+    console.log(generatedContent, currentVersionIndex, "generated content");
+  }, [currentVersionIndex, generatedContent]);
+
+  const handlePrevVersion = useCallback(() => {
+    setRetryCount(0); // Reset retry count
+    setCurrentVersionIndex((prev) => prev - 1);
+    setRawContent(generatedContent[currentVersionIndex]);
+  }, [currentVersionIndex, generatedContent]);
   const tabs: Tab[] = [
     // info, social, education, experience, project
     {
