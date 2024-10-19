@@ -30,6 +30,7 @@ const config: Config = {
         "blue-opacity": "rgba(3, 28, 166, 0.58)", // 58% opacity blue
         "green-opacity": "rgba(61, 221, 115, 0.3)", // 30% opacity green
         "light-gray-opacity": "rgba(217, 217, 217, 0.2)", // 20% opacity light gray
+        "light-gray-opacity-2": "rgba(217, 217, 217, 0.3)", // 20% opacity light gray
         "dark-gray-opacity": "rgba(217, 217, 217, 0.2)", // 20% opacity dark gray
         "blue-light": "#3F3F46", // Light variant for additional styles
         "dark-blue": "#010440", // Variant of navy blue

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Input, TextArea } from "@/components/forms/inputs";
 import type { Education, Experience, Project, Social } from "@/app/actions";
 import { newNotification } from "@/helpers/commons/client";
+import { Add, Edit, Trash } from "iconsax-react";
 
 export type GroupField<Name = string> = {
   type:
@@ -44,6 +45,7 @@ function MultipleGroupFields<T>({
   const [currentData, setCurrentData] = useState<T>({} as T);
   const [errors, setErrors] = useState<string[]>([]);
   const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     setGroupData(defaultValues);
@@ -61,7 +63,6 @@ function MultipleGroupFields<T>({
   const validateGroupData = () => {
     const newErrors: string[] = [];
     fields.forEach((field) => {
-      console.log(field, currentData[field.name as keyof T]);
       if (field.required && !currentData[field.name as keyof T]) {
         newErrors.push(`${field.label} is required.`);
       }
@@ -73,14 +74,17 @@ function MultipleGroupFields<T>({
   const addOrUpdateGroup = () => {
     if (validateGroupData()) {
       if (editIndex !== null) {
-        setGroupData(prevData => {
-          prevData[editIndex] = currentData;
-          return prevData;
+        setGroupData((prevData) => {
+          const newData = [...prevData];
+          newData[editIndex] = currentData;
+          return newData;
         });
+        setEditIndex(null);
       } else {
         setGroupData((prevData) => [...prevData, currentData]);
       }
       setCurrentData({} as T);
+      setIsModalOpen(false);
     }
   };
 
@@ -88,7 +92,6 @@ function MultipleGroupFields<T>({
     if (onErrors) {
       onErrors(errors);
     }
-    // set timeout to clear errors after 5 seconds
     const timeout = setTimeout(() => {
       setErrors([]);
     }, 5000);
@@ -96,7 +99,6 @@ function MultipleGroupFields<T>({
   }, [errors]);
 
   useEffect(() => {
-    console.log(groupData, "something changed");
     if (onChange) {
       onChange(groupData);
     }
@@ -118,6 +120,7 @@ function MultipleGroupFields<T>({
     if (allowEdit) {
       setCurrentData(groupData[index]);
       setEditIndex(index);
+      setIsModalOpen(true);
     }
   };
 
@@ -125,6 +128,13 @@ function MultipleGroupFields<T>({
     setCurrentData({} as T);
     setEditIndex(null);
     setErrors([]);
+    setIsModalOpen(false);
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+    setCurrentData({} as T);
+    setEditIndex(null);
   };
 
   const renderField = (field: GroupField) => {
@@ -175,8 +185,6 @@ function MultipleGroupFields<T>({
 
   return (
     <div className="flex flex-col items-center justify-center space-y-4 w-full">
-      <h2 className="text-lg font-semibold text-left w-full">{name}</h2>
-
       {errors.length > 0 && !onErrors && (
         <div className="text-red-500 mb-4">
           {errors.map((error, index) => (
@@ -185,59 +193,82 @@ function MultipleGroupFields<T>({
         </div>
       )}
 
-      {fields.map((field, index) => (
-        <div key={index} className="w-full">
-          {renderField(field)}
-        </div>
-      ))}
-      <div className="w-full">
-        <button
-          onClick={addOrUpdateGroup}
-          className="bg-green-500 text-white px-4 py-2 rounded mr-2"
-          type="button"
-        >
-          {editIndex !== null ? `Update ${name}` : `Add ${name}`}
-        </button>
-        {editIndex !== null && (
-          <button
-            onClick={cancelEdit}
-            className="bg-gray-500 text-white px-4 py-2 rounded"
-            type="button"
-          >
-            Cancel
-          </button>
-        )}
-      </div>
-
-      {groupData.map((group, index) => (
-        <div key={index} className="w-full p-4 border rounded mt-4">
-          {fields.map((field, fieldIndex) => (
-            <p key={fieldIndex}>
-              <strong>{field.label}:</strong> {(group as any)[field.name]}
-            </p>
-          ))}
-          <div className="mt-2">
-            {allowEdit && (
+      {isModalOpen && (
+        <div className="grid place-items-center fixed inset-0 w-svw h-svh bg-light-gray-opacity-2 py-4 z-30">
+          <div className="px-10 py-12 bg-deep-blue max-h-96 overflow-y-scroll">
+            {fields.map((field, index) => (
+              <div key={index} className="w-full">
+                {renderField(field)}
+              </div>
+            ))}
+            <div className="w-full">
               <button
-                onClick={() => editGroup(index)}
-                className="bg-blue-500 text-white px-2 py-1 rounded mr-2"
+                onClick={addOrUpdateGroup}
+                className="bg-green-500 text-white px-4 py-2 rounded mr-2"
                 type="button"
               >
-                Edit
+                {editIndex !== null ? `Update ${name}` : `Add ${name}`}
               </button>
-            )}
-            <button
-              onClick={() => removeGroup(index)}
-              className="bg-red-500 text-white px-2 py-1 rounded"
-              type="button"
-            >
-              Remove
-            </button>
+              <button
+                onClick={cancelEdit}
+                className="bg-gray-500 text-white px-4 py-2 rounded"
+                type="button"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {groupData.map((group, index) => (
+        <div
+          key={index}
+          className="w-full px-4 py-6 flex flex-col justify-center items-center bg-light-gray-opacity relative"
+        >
+          {fields.map((field, fieldIndex) => (
+            <p key={fieldIndex} className="w-full text-xl overflow-clip">
+              <strong className="font-bold">{field.label}:</strong>{" "}
+              <span className="font-light text-wrap">
+                {(group as any)[field.name]}
+              </span>
+            </p>
+          ))}
+          <div className="absolute w-full h-full flex justify-end items-end p-5">
+            <div className="btn-wrapper flex gap-4">
+              {allowEdit && (
+                <Edit
+                  onClick={() => editGroup(index)}
+                  size={"24px"}
+                  className="text-white"
+                  type="button"
+                />
+              )}
+              <Trash
+                onClick={() => removeGroup(index)}
+                className=" text-red-alert"
+                size={"24px"}
+                color={"#FF0202"}
+                type="button"
+              />
+            </div>
           </div>
         </div>
       ))}
+      <div className="add-btn w-full text-left">
+
+        <div className="bg-shadow-blue px-7 py-4 rounded-full w-24">
+          <Add
+            onClick={openModal}
+            className=" text-white"
+            size={"40px"}
+            type="button"
+          />
+        </div>
+      </div>
     </div>
   );
+
 }
 
 export function Fields<T>({
