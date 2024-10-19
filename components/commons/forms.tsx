@@ -349,7 +349,7 @@ export default function Forms() {
   ];
 
   return (
-    <div className="w-full flex flex-col">
+    <form className="w-full flex flex-col">
       <div className="form-tab w-full">
         <div className="w-full rounded-full bg-deep-blue-opacity h-16 flex">
           <div className="tab-nav flex-grow h-full flex justify-evenly items-center">
@@ -379,10 +379,13 @@ export default function Forms() {
               
           </div>
           <div className="tab-send-btn h-full flex-shrink-0 w-24 rounded-full bg-progress-green grid place-items-center">
+            <button type="submit">
               <Send2 
-                  color="#fff"
-                  size="40px"
+                color="#fff"
+                size="40px"
+                type="submit"
               />
+            </button>
           </div>
         </div>
       </div>
@@ -397,6 +400,6 @@ export default function Forms() {
           })
         }
       </div>
-    </div>
+    </form>
   );
 }
