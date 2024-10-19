@@ -34,6 +34,7 @@ const config: Config = {
         "blue-light": "#3F3F46", // Light variant for additional styles
         "dark-blue": "#010440", // Variant of navy blue
         "green-light": "#3DD973", // Lighter green for variations
+        "green-light-opacity": "rgba(61, 217, 115, 0.58)", // 30% opacity light green
         "blue-dark": "#031CA6", // Darker shade of blue for variants
         "black-opacity": "rgba(0, 0, 0, 0.46)", // 46% opacity black
         "deep-blue-opacity": "rgba(1, 4, 64, 0.45)",// 58% opacity deep blue

@@ -35,7 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} w-dvw bg-deep-blue text-light-gray h-max flex flex-col relative overflow-x-auto md:overflow-x-visible`}
+        className={`${inter.className} w-dvw bg-deep-blue text-light-gray h-max flex flex-col relative overflow-x-clip md:overflow-x-clip`}
       >
         <Header />
         <main className="w-full h-max max-w-vw flex-grow grid place-items-center px-3  md:px-10 overflow-x-auto">
