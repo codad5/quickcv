@@ -168,42 +168,6 @@ export default function Forms() {
     };
   }, []);
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    if (!name) return;
-    console.log(name, value, resumeInfo, "name and value from input change");
-    setResumeInfo((prev) => ({ ...prev, [name]: value } as BasicResumeInfo));
-    // setRawContent("# Heading One (H2");
-  };
-
-  const handleSocalInputChange = (data: any) => {
-    console.log(data);
-    setResumeInfo((prev) => ({ ...prev, social: data } as BasicResumeInfo));
-  };
-
-  const handleEducationChange = (educationData: Education[]) => {
-    console.log(educationData, "education data");
-    setResumeInfo(
-      (prev) => ({ ...prev, education: educationData } as BasicResumeInfo)
-    );
-  };
-
-  const handleExperienceChange = (educationData: Experience[]) => {
-    console.log(educationData, "education data");
-    setResumeInfo(
-      (prev) => ({ ...prev, experience: educationData } as BasicResumeInfo)
-    );
-  };
-
-  const handleProjectChange = (projectData: any) => {
-    console.log(projectData, "project data");
-    setResumeInfo(
-      (prev) => ({ ...prev, projects: projectData } as BasicResumeInfo)
-    );
-  };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -349,7 +313,7 @@ export default function Forms() {
   ];
 
   return (
-    <form className="w-full flex flex-col">
+    <form className="w-full flex flex-col" onSubmit={handleSubmit}>
       <div className="form-tab w-full">
         <div className="w-full rounded-full bg-deep-blue-opacity h-16 flex">
           <div className="tab-nav flex-grow h-full flex justify-evenly items-center">
