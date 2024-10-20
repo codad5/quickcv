@@ -56,7 +56,7 @@ export function PdfSection({
     setViewRaw(!viewRaw);
   };
 
-  props.className = `w-1/2 p-1 text-green pt-6 ${props.className}`;
+  props.className = `w-1/2 p-1 text-green ${props.className}`;
 
   return (
     <div {...props}>
