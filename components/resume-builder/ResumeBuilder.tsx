@@ -372,7 +372,7 @@ export default function ResumeBuilder() {
     <>
       <div className="w-full formsection md:w-[540px]">
         <form className="w-full flex flex-col" onSubmit={handleSubmit}>
-          <div className="form-tab w-full">
+          <div className="form-tab w-full sticky top-3">
             <div className="w-full rounded-full bg-deep-blue-opacity h-16 flex">
               <div className="tab-nav flex-grow h-full flex justify-evenly items-center">
                 {tabs.map((tab, index) => {

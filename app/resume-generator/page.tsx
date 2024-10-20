@@ -10,10 +10,15 @@ import { ResumeGeneratorLimiter } from "@/helpers/rate-limiter";
 export default async function Home() {
     const MAX_CREDIT = parseInt(process.env.QUICK_CV_RATE_LIMIT ?? "20");
     const ip = getIp()
-    const remains = await ResumeGeneratorLimiter.getRemaining(`${ip}`)
+    let remains = 0; 
+    try {
+      remains = await ResumeGeneratorLimiter.getRemaining(`${ip}`)
+    } catch (e) {
+      console.log(`error`, e);
+    }
     return (
       <div className="w-full h-max flex justify-center overflow-x-hidden flex-wrap py-10 md:px-2 gap-4">
-          <ResumeBuilder />
+          <ResumeBuilder  />
       </div>
     );
 }
