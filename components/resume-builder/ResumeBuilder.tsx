@@ -16,7 +16,7 @@ import {
   Setting2,
   Teacher,
 } from "iconsax-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   EducationFields,
   ExperienceFields,
@@ -174,6 +174,12 @@ export default function ResumeBuilder() {
   const [changeMade, setChangeMade] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [retryCount, setRetryCount] = useState(0);
+  const pdfSectionRef = useRef<HTMLDivElement>(null);
+  
+
+  const scrollToPdfSection = () => {
+    pdfSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
     setChangeMade(true);
@@ -256,6 +262,7 @@ export default function ResumeBuilder() {
       if (message.name === "" || message.role === "" || message.email === "")
         throw new Error("Name, role and email are required");
       setGeneratingState(true);
+      scrollToPdfSection();
       const result = await generateResume(message, retryCount);
       if (result.status === "error") throw new Error(result.message);
       for await (const value of readStreamableValue(result.message)) {
@@ -424,6 +431,7 @@ export default function ResumeBuilder() {
         <PdfSection
           className="w-full"
           documentTitle={resumeInfo?.name ?? "Quick Cv"}
+          ref={pdfSectionRef}
         >
           {rawContent}
         </PdfSection>

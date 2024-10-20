@@ -12,7 +12,7 @@ export default async function Home() {
     const ip = getIp()
     const remains = await ResumeGeneratorLimiter.getRemaining(`${ip}`)
     return (
-      <div className="w-full h-max flex justify-center overflow-x-hidden flex-wrap py-10 md:px-2">
+      <div className="w-full h-max flex justify-center overflow-x-hidden flex-wrap py-10 md:px-2 gap-4">
           <ResumeBuilder />
       </div>
     );
