@@ -59,7 +59,7 @@ Ensure proper use of headings, bullet points, and hyperlinks.
 
 [Professional Title]
 
-[Location] | [Personal Website or Portfolio](#) | [Email Address](mailto:#) | [LinkedIn Profile](#) | [GitHub Profile](#) | [Twitter Profile](#)
+📍[Location] | 🌐 [Personal Website or Portfolio](#) | ✉️ [Email Address](mailto:#) | [LinkedIn Profile](#) | [GitHub Profile](#) | [Twitter Profile](#)
 
 ## Technical Proficiencies
 - Languages: [Programming Languages]

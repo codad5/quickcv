@@ -59,7 +59,7 @@ Ensure proper use of headings, bullet points, and hyperlinks.
 
 <Professional Title or Summary>
 
-<City, State> | [<personal website>](https://<website-url>) | [<email>](mailto:<email>) | [<LinkedIn>](https://www.linkedin.com/in/<profile>) | [<Other Professional Profiles>](https://<profile-url>)
+📍<City, State> | 🌐 [<personal website>](https://<website-url>) | ✉️ [<email>](mailto:<email>) | [<LinkedIn>](https://www.linkedin.com/in/<profile>) | [<Other Professional Profiles>](https://<profile-url>)
 
 ## Skills & Expertise
 - <Skill Category 1>: <List of relevant skills>
