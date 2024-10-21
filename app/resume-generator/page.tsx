@@ -17,7 +17,7 @@ export default async function Home() {
       console.log(`error`, e);
     }
     return (
-      <div className="w-full h-max flex justify-center overflow-x-hidden flex-wrap py-10 md:px-2 gap-4">
+      <div className="w-full h-max flex justify-center overflow-x-hidden flex-wrap md:py-10 md:px-2 gap-4">
           <ResumeBuilder  />
       </div>
     );
