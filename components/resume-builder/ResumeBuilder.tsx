@@ -40,22 +40,22 @@ import CreditUsage from "../commons/CreditUsage";
 
 type TabComponent = (props: {
   resumeInfo: BasicResumeInfo | null;
-  handleChange: (data: BasicResumeInfo[string]) => void;
+  handleChange: (data: BasicResumeInfo[string] | BasicResumeInfo) => void;
 }) => JSX.Element;
 
 type Tab = {
   icon: any;
   text: string;
-  component: any;
-  handleChange?: (data: BasicResumeInfo[string]) => void;
+  component: TabComponent;
+  handleChange: (data: BasicResumeInfo[string]|BasicResumeInfo) => void;
 };
 
 function InfoSection({
   resumeInfo = null,
-  handleInfoInputChange,
+  handleChange
 }: {
   resumeInfo: BasicResumeInfo | null;
-  handleInfoInputChange: (data: BasicResumeInfo) => void;
+  handleChange: (data: BasicResumeInfo) => void;
 }) {
   const [info, setInfo] = useState<BasicResumeInfo | null>(resumeInfo);
 
@@ -68,7 +68,7 @@ function InfoSection({
 
   useEffect(() => {
     if (info) {
-      handleInfoInputChange(info);
+      handleChange(info);
     }
   }, [info]);
 
@@ -424,13 +424,13 @@ export default function ResumeBuilder({MAX_CREDIT, remains}: {MAX_CREDIT: number
                   </h3>
                   <tab.component
                     resumeInfo={resumeInfo}
-                    handleInfoInputChange={tab.handleChange}
+                    handleChange={tab.handleChange}
                   />
                 </div>
               );
             })}
           </div>
-          <div className="w-full pt-6">
+          <div className="w-full pt-6 px-4">
             <button className={`${generatingState ? 'bg-gray-500' : 'bg-progress-green'} px-7 py-4 rounded-full w-24`} disabled={generatingState}>
               <Send2 className=" text-white" size={"40px"} type="button" />
             </button>
