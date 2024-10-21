@@ -47,6 +47,7 @@ function MultipleGroupFields<T>({
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+
   useEffect(() => {
     setGroupData(defaultValues);
   }, [defaultValues]);
@@ -100,6 +101,7 @@ function MultipleGroupFields<T>({
 
   useEffect(() => {
     if (onChange) {
+      console.log(groupData, "groupData");
       onChange(groupData);
     }
   }, [groupData]);
