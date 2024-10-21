@@ -6,6 +6,7 @@ import {
   generateResume,
 } from "@/app/actions";
 import {
+  Add,
   Briefcase,
   Link1,
   Next,
@@ -424,6 +425,15 @@ export default function ResumeBuilder() {
                 </div>
               );
             })}
+          </div>
+          <div className="w-full pt-6">
+            <button className="bg-progress-green px-7 py-4 rounded-full w-24">
+              <Send2
+                className=" text-white"
+                size={"40px"}
+                type="button"
+              />
+            </button>
           </div>
         </form>
       </div>
