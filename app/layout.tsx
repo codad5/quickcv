@@ -37,6 +37,7 @@ export default function RootLayout({
       <body
         className={`${inter.className} w-dvw bg-deep-blue text-light-gray h-max min-h-dvh flex flex-col relative overflow-x-clip md:overflow-x-clip`}
       >
+        <NotificationComponent />
         <Header />
         <main className="w-full h-max max-w-vw flex-grow grid px-3  md:px-10 overflow-x-auto">
           {children}

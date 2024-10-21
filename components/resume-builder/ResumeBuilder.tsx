@@ -36,6 +36,7 @@ import {
 import { readStreamableValue } from "ai/rsc";
 import { Input, TextArea } from "../forms/inputs";
 import { PdfSection } from "./PdfSection";
+import CreditUsage from "../commons/CreditUsage";
 
 type TabComponent = (props: {
   resumeInfo: BasicResumeInfo | null;
@@ -165,7 +166,7 @@ function ProjectSection({
   );
 }
 
-export default function ResumeBuilder() {
+export default function ResumeBuilder({MAX_CREDIT, remains}: {MAX_CREDIT: number, remains: number}) {
   const [activeTab, setActiveTab] = useState(0);
   const [resumeInfo, setResumeInfo] = useState<BasicResumeInfo | null>(null);
   const [rawContent, setRawContent] = useState<string>("# Heading One (H1)");
@@ -375,7 +376,10 @@ export default function ResumeBuilder() {
       <div className="w-full formsection md:w-[540px]">
         <form className="w-full flex flex-col relative" onSubmit={handleSubmit}>
           <div className="form-tab w-full sticky top-0">
-            <div className="w-full rounded-full bg-deep-blue-opacity h-16 flex">
+            <div className="credit-dispaly absolute bg-red-alert -top-6 left-12 h-6 w-20 text-center rounded-t-full">
+              <CreditUsage max={MAX_CREDIT} remains={remains} />
+            </div>
+            <div className="w-full rounded-full bg-deep-blue-opacity h-16 flex z-30">
               <div className="tab-nav flex-grow h-full flex justify-evenly items-center">
                 {tabs.map((tab, index) => {
                   return (
@@ -399,8 +403,8 @@ export default function ResumeBuilder() {
                   );
                 })}
               </div>
-              <div className="tab-send-btn h-full flex-shrink-0 w-24 rounded-full bg-progress-green grid place-items-center">
-                <button type="submit">
+              <div className={`tab-send-btn h-full flex-shrink-0 w-24 rounded-full  grid place-items-center ${generatingState ? 'bg-gray-500' : 'bg-progress-green'}`}>
+                <button type="submit" disabled={generatingState}>
                   <Send2 color="#fff" size="40px" type="submit" />
                 </button>
               </div>
@@ -427,12 +431,8 @@ export default function ResumeBuilder() {
             })}
           </div>
           <div className="w-full pt-6">
-            <button className="bg-progress-green px-7 py-4 rounded-full w-24">
-              <Send2
-                className=" text-white"
-                size={"40px"}
-                type="button"
-              />
+            <button className={`${generatingState ? 'bg-gray-500' : 'bg-progress-green'} px-7 py-4 rounded-full w-24`} disabled={generatingState}>
+              <Send2 className=" text-white" size={"40px"} type="button" />
             </button>
           </div>
         </form>

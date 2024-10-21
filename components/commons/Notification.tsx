@@ -30,7 +30,7 @@ function NotificationComponent({}: {}) {
   }, []);
 
   return (
-    <div className="p-2 px-4 fixed bottom-0 right-0">
+    <div className="p-2 px-4 fixed top-5 right-3 z-50">
       {notifications.map((notification, index) => (
         <div
           key={index}

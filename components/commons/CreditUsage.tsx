@@ -20,8 +20,8 @@ function CreditUsage({ remains, max }: { remains: number; max: number }) {
   }, []);
 
   return (
-    <div className="p-2 px-4">
-      Credit Count : {_remains}/{max}
+    <div className="">
+      {_remains}/{max}
     </div>
   );
 }
