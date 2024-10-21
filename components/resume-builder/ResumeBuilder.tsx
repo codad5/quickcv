@@ -65,7 +65,7 @@ function InfoSection({
   };
 
   useEffect(() => {
-    if (resumeInfo) {
+    if (resumeInfo && !info) {
       setInfo(resumeInfo);
     }
   }, [resumeInfo]);
