@@ -1,21 +1,20 @@
-'use client';
-import { useEffect, useRef, useState } from "react";
+"use client";
+
+import { useEffect, useRef, useState, forwardRef } from "react";
 import { PrintableComponent } from "@/components/pdf/viewer";
 import { useReactToPrint } from "react-to-print";
 import Markdown from "react-markdown";
-import remarkGfm from 'remark-gfm'
+import remarkGfm from "remark-gfm";
 import { Edit, Printer } from "iconsax-react";
-import '@/styles/print.scss';
- 
+import "@/styles/print.scss";
 
-export function PdfSection({
-  children,
-  documentTitle,
-  ...props
-}: {
-  children: string;
-  documentTitle?: string;
-} & React.HTMLAttributes<HTMLDivElement>) {
+export const PdfSection = forwardRef<
+  HTMLDivElement,
+  {
+    children: string;
+    documentTitle?: string;
+  } & React.HTMLAttributes<HTMLDivElement>
+>(({ children, documentTitle, ...props }, ref) => {
   const [viewRaw, setViewRaw] = useState(false);
   const [rawContent, setRawContent] = useState(children);
   const printableRef = useRef(null);
@@ -35,16 +34,6 @@ export function PdfSection({
     },
   });
 
-  // const handlePrint = () => {
-  //    return generatePDF(printableRef, {
-  //      filename: `${documentTitle || "resume"}.pdf`,
-  //      resolution: Resolution.MEDIUM,
-  //      page: {
-  //        margin: Margin.LARGE,
-  //      },
-  //    });
-  // };
-
   const syncContent = () => {
     if (textareaRef.current) {
       setRawContent(textareaRef.current.value);
@@ -56,10 +45,10 @@ export function PdfSection({
     setViewRaw(!viewRaw);
   };
 
-  props.className = `w-1/2 p-1 text-green pt-6 ${props.className}`;
+  props.className = `w-1/2 p-1 text-green ${props.className}`;
 
   return (
-    <div {...props}>
+    <div {...props} ref={ref}>
       <PrintableComponent
         ref={printableRef}
         className="w-full bg-white p-4 min-h-full h-auto printableComponent"
@@ -98,4 +87,6 @@ export function PdfSection({
       </div>
     </div>
   );
-}
+});
+
+PdfSection.displayName = "PdfSection";

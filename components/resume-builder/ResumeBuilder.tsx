@@ -1,39 +1,173 @@
 "use client";
-import { fields } from "../../helpers/resume-builder/fields";
-import { Input, TextArea } from "@/components/forms/inputs";
-import { PdfSection } from "./PdfSection";
+import {
+  BasicResumeInfo,
+  Education,
+  Experience,
+  generateResume,
+} from "@/app/actions";
+import {
+  Add,
+  Briefcase,
+  Link1,
+  Next,
+  Previous,
+  Profile,
+  Repeat,
+  Send2,
+  Setting2,
+  Teacher,
+} from "iconsax-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   EducationFields,
   ExperienceFields,
   ProjectFields,
   SocialMultipleFields,
 } from "../forms/Extrafields";
-import { readStreamableValue } from "ai/rsc";
-import { useCallback, useEffect, useState } from "react";
+import { fields } from "@/helpers/resume-builder/fields";
 import {
-  BasicResumeInfo,
-  Education,
-  Experience,
-  generateResume,
-} from "../../app/actions";
-import {
+  getRememberInfo,
+  RememberInfo,
   APPToRemember,
+  newNotification,
   decrementCreditEvent,
   ForgetInfo,
-  getRememberInfo,
-  newNotification,
-  RememberInfo,
 } from "@/helpers/commons/client";
-import { ArrowDown2, Next, Previous, Repeat, Send2 } from "iconsax-react";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionItemHeading,
-  AccordionItemButton,
-  AccordionItemPanel,
-} from "react-accessible-accordion";
+import { readStreamableValue } from "ai/rsc";
+import { Input, TextArea } from "../forms/inputs";
+import { PdfSection } from "./PdfSection";
+import CreditUsage from "../commons/CreditUsage";
 
-export default function ResumeBuilder() {
+type TabComponent = (props: {
+  resumeInfo: BasicResumeInfo | null;
+  handleChange: (data: BasicResumeInfo[string]) => void;
+}) => JSX.Element;
+
+type Tab = {
+  icon: any;
+  text: string;
+  component: any;
+  handleChange?: (data: BasicResumeInfo[string]) => void;
+};
+
+function InfoSection({
+  resumeInfo = null,
+  handleInfoInputChange,
+}: {
+  resumeInfo: BasicResumeInfo | null;
+  handleInfoInputChange: (data: BasicResumeInfo) => void;
+}) {
+  const [info, setInfo] = useState<BasicResumeInfo | null>(resumeInfo);
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setInfo((prev) => ({ ...prev, [name]: value } as BasicResumeInfo));
+  };
+
+  useEffect(() => {
+    if (info) {
+      handleInfoInputChange(info);
+    }
+  }, [info]);
+
+  return (
+    <div className="w-full flex flex-col gap-6">
+      {/* <div className="form-tab w-full "> */}
+      {fields.map((field, index) => {
+        return field?.type !== "textarea" ? (
+          <Input
+            key={index}
+            {...field}
+            onChange={handleInputChange}
+            value={`${resumeInfo?.[field.name] ?? ""}`}
+          />
+        ) : (
+          <TextArea
+            key={index}
+            {...field}
+            onChange={handleInputChange}
+            value={`${resumeInfo?.[field.name] ?? ""}`}
+          />
+        );
+      })}
+      {/* </div> */}
+    </div>
+  );
+}
+
+function SocialSection({
+  resumeInfo = null,
+  handleChange,
+}: {
+  resumeInfo: BasicResumeInfo | null;
+  handleChange: (data: BasicResumeInfo["social"]) => void;
+}) {
+  return (
+    <div className="w-full flex flex-col">
+      <SocialMultipleFields
+        onChange={handleChange}
+        defaultValues={resumeInfo?.social}
+      />
+    </div>
+  );
+}
+
+// education, experience, project
+function EducationSection({
+  resumeInfo = null,
+  handleChange,
+}: {
+  resumeInfo: BasicResumeInfo | null;
+  handleChange: (data: BasicResumeInfo["education"]) => void;
+}) {
+  return (
+    <div className="w-full flex flex-col">
+      <EducationFields
+        onChange={handleChange}
+        defaultValues={resumeInfo?.education}
+      />
+    </div>
+  );
+}
+
+function ExperienceSection({
+  resumeInfo = null,
+  handleChange,
+}: {
+  resumeInfo: BasicResumeInfo | null;
+  handleChange: (data: BasicResumeInfo["experience"]) => void;
+}) {
+  return (
+    <div className="w-full flex flex-col">
+      <ExperienceFields
+        onChange={handleChange}
+        defaultValues={resumeInfo?.experience}
+      />
+    </div>
+  );
+}
+
+function ProjectSection({
+  resumeInfo = null,
+  handleChange,
+}: {
+  resumeInfo: BasicResumeInfo | null;
+  handleChange: (data: BasicResumeInfo["projects"]) => void;
+}) {
+  return (
+    <div className="w-full flex flex-col">
+      <ProjectFields
+        onChange={handleChange}
+        defaultValues={resumeInfo?.projects}
+      />
+    </div>
+  );
+}
+
+export default function ResumeBuilder({MAX_CREDIT, remains}: {MAX_CREDIT: number, remains: number}) {
+  const [activeTab, setActiveTab] = useState(0);
   const [resumeInfo, setResumeInfo] = useState<BasicResumeInfo | null>(null);
   const [rawContent, setRawContent] = useState<string>("# Heading One (H1)");
   const [generatedContent, setGeneratedContent] = useState<string[]>([]);
@@ -42,6 +176,12 @@ export default function ResumeBuilder() {
   const [changeMade, setChangeMade] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [retryCount, setRetryCount] = useState(0);
+  const pdfSectionRef = useRef<HTMLDivElement>(null);
+  
+
+  const scrollToPdfSection = () => {
+    pdfSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
     setChangeMade(true);
@@ -85,53 +225,16 @@ export default function ResumeBuilder() {
     };
   }, []);
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    if (!name) return;
-    console.log(name, value, resumeInfo, "name and value from input change");
-    setResumeInfo((prev) => ({ ...prev, [name]: value } as BasicResumeInfo));
-    // setRawContent("# Heading One (H2");
-  };
-
-  const handleSocalInputChange = (data: any) => {
-    console.log(data);
-    setResumeInfo((prev) => ({ ...prev, social: data } as BasicResumeInfo));
-  };
-
-  const handleEducationChange = (educationData: Education[]) => {
-    console.log(educationData, "education data");
-    setResumeInfo(
-      (prev) => ({ ...prev, education: educationData } as BasicResumeInfo)
-    );
-  };
-
-  const handleExperienceChange = (educationData: Experience[]) => {
-    console.log(educationData, "education data");
-    setResumeInfo(
-      (prev) => ({ ...prev, experience: educationData } as BasicResumeInfo)
-    );
-  };
-
-  const handleProjectChange = (projectData: any) => {
-    console.log(projectData, "project data");
-    setResumeInfo(
-      (prev) => ({ ...prev, projects: projectData } as BasicResumeInfo)
-    );
-  };
-
-  const handleSubmit = 
-    async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      try {
-        if (!changeMade) throw new Error("No change made");
-        await generateResumeContent();
-      } catch (error) {
-        console.error(error);
-        newNotification((error as Error).message, "error");
-      }
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      if (!changeMade) throw new Error("No change made");
+      await generateResumeContent();
+    } catch (error) {
+      console.error(error);
+      newNotification((error as Error).message, "error");
     }
+  };
 
   const handleRetry = useCallback(async () => {
     try {
@@ -161,6 +264,7 @@ export default function ResumeBuilder() {
       if (message.name === "" || message.role === "" || message.email === "")
         throw new Error("Name, role and email are required");
       setGeneratingState(true);
+      scrollToPdfSection();
       const result = await generateResume(message, retryCount);
       if (result.status === "error") throw new Error(result.message);
       for await (const value of readStreamableValue(result.message)) {
@@ -201,118 +305,144 @@ export default function ResumeBuilder() {
     setCurrentVersionIndex((prev) => prev - 1);
     setRawContent(generatedContent[currentVersionIndex]);
   }, [currentVersionIndex, generatedContent]);
+  const tabs: Tab[] = [
+    // info, social, education, experience, project
+    {
+      icon: Profile,
+      text: "Info",
+      component: InfoSection,
+      handleChange: (data: any) => {
+        console.log(data);
+        setResumeInfo(
+          (prev) =>
+            ({
+              ...prev,
+              name: data?.name ?? prev?.name,
+              email: data?.email ?? prev?.email,
+              role: data?.role ?? prev?.role,
+              description: data?.description ?? prev?.description,
+              dob: data?.dob ?? prev?.dob,
+            } as BasicResumeInfo)
+        );
+      },
+    },
+    {
+      icon: Link1,
+      text: "Social",
+      component: SocialSection,
+      handleChange: (data: any) => {
+        console.log(data);
+        setResumeInfo((prev) => ({ ...prev, social: data } as BasicResumeInfo));
+      },
+    },
+    {
+      icon: Teacher,
+      text: "Edu",
+      component: EducationSection,
+      handleChange: (data: any) => {
+        console.log(data);
+        setResumeInfo(
+          (prev) => ({ ...prev, education: data } as BasicResumeInfo)
+        );
+      },
+    },
+    {
+      icon: Briefcase,
+      text: "Exp",
+      component: ExperienceSection,
+      handleChange: (data: any) => {
+        console.log(data);
+        setResumeInfo(
+          (prev) => ({ ...prev, experience: data } as BasicResumeInfo)
+        );
+      },
+    },
+    {
+      icon: Setting2,
+      text: "Proj",
+      component: ProjectSection,
+      handleChange: (data: any) => {
+        console.log(data);
+        setResumeInfo(
+          (prev) => ({ ...prev, projects: data } as BasicResumeInfo)
+        );
+      },
+    },
+  ];
 
+  
   return (
     <>
-      <div className="w-full sm:w-1/2 h-full basis-2/5">
-        {/* a form that ask for name, gender date of birth , occupation, role, and social handle */}
-        <form
-          className="flex flex-col items-center justify-center space-y-4 w-full"
-          onSubmit={handleSubmit}
-        >
-          <Accordion
-            allowZeroExpanded
-            className="w-full flex flex-col space-y-4"
-            preExpanded={["personal-information"]}
-          >
-            <AccordionItem className="w-full" uuid="personal-information">
-              <AccordionItemHeading className="w-full">
-                <AccordionItemButton className="w-full h-12 bg-green-500 text-white flex items-center justify-between px-4">
-                  Personal Information <ArrowDown2 />
-                </AccordionItemButton>
-              </AccordionItemHeading>
-              <AccordionItemPanel className="w-full py-4 space-y-4">
-                {fields.map((field, index) => {
-                  return field?.type !== "textarea" ? (
-                    <Input
+      <div className="w-full formsection md:w-[540px]">
+        <form className="w-full flex flex-col relative" onSubmit={handleSubmit}>
+          <div className="form-tab w-full sticky top-0">
+            <div className="credit-dispaly absolute bg-red-alert -top-6 left-12 h-6 w-20 text-center rounded-t-full">
+              <CreditUsage max={MAX_CREDIT} remains={remains} />
+            </div>
+            <div className="w-full rounded-full bg-deep-blue-opacity h-16 flex z-30">
+              <div className="tab-nav flex-grow h-full flex justify-evenly items-center">
+                {tabs.map((tab, index) => {
+                  return (
+                    <div
                       key={index}
-                      {...field}
-                      onChange={handleInputChange}
-                      value={`${resumeInfo?.[field.name] ?? ""}`}
-                    />
-                  ) : (
-                    <TextArea
-                      key={index}
-                      {...field}
-                      onChange={handleInputChange}
-                      value={`${resumeInfo?.[field.name] ?? ""}`}
-                    />
+                      className={`tab-nav-item p-3 md:p-0 md:w-20 md:h-10 flex justify-center gap-2 items-center cursor-pointer rounded-full ${
+                        activeTab === index ? "bg-green-light-opacity" : ""
+                      }`}
+                      onClick={() => setActiveTab(index)}
+                    >
+                      <tab.icon
+                        color={`${activeTab === index ? "#D9D9D9" : "#3DD973"}`}
+                        size="24px"
+                      />
+                      {activeTab === index ? (
+                        <div className="tab-nav-item-active hidden md:inline-block">
+                          {tab.text}
+                        </div>
+                      ) : null}
+                    </div>
                   );
                 })}
-              </AccordionItemPanel>
-            </AccordionItem>
-            <AccordionItem className="w-full" uuid="social-information">
-              <AccordionItemHeading className="w-full">
-                <AccordionItemButton className="w-full h-12 bg-green-500 text-white flex items-center justify-between px-4">
-                  Social Information <ArrowDown2 />
-                </AccordionItemButton>
-              </AccordionItemHeading>
-              <AccordionItemPanel className="w-full py-4">
-                <SocialMultipleFields
-                  onChange={handleSocalInputChange}
-                  defaultValues={resumeInfo?.social}
-                />
-              </AccordionItemPanel>
-            </AccordionItem>
-            <AccordionItem className="w-full" uuid="education-information">
-              <AccordionItemHeading className="w-full">
-                <AccordionItemButton className="w-full h-12 bg-green-500 text-white flex items-center justify-between px-4">
-                  Education Information <ArrowDown2 />
-                </AccordionItemButton>
-              </AccordionItemHeading>
-              <AccordionItemPanel className="w-full py-4">
-                <EducationFields
-                  onChange={handleEducationChange}
-                  defaultValues={resumeInfo?.education}
-                />
-              </AccordionItemPanel>
-            </AccordionItem>
-            <AccordionItem className="w-full" uuid="experience-information">
-              <AccordionItemHeading className="w-full">
-                <AccordionItemButton className="w-full h-12 bg-green-500 text-white flex items-center justify-between px-4">
-                  Experience Information <ArrowDown2 />
-                </AccordionItemButton>
-              </AccordionItemHeading>
-              <AccordionItemPanel className="w-full py-4">
-                <ExperienceFields
-                  onChange={handleExperienceChange}
-                  defaultValues={resumeInfo?.experience}
-                />
-              </AccordionItemPanel>
-            </AccordionItem>
-            <AccordionItem className="w-full" uuid="project-information">
-              <AccordionItemHeading className="w-full">
-                <AccordionItemButton className="w-full h-12 bg-green-500 text-white flex items-center justify-between px-4">
-                  Project Information <ArrowDown2 />
-                </AccordionItemButton>
-              </AccordionItemHeading>
-              <AccordionItemPanel className="w-full py-4">
-                <ProjectFields
-                  onChange={handleProjectChange}
-                  defaultValues={resumeInfo?.projects}
-                />
-              </AccordionItemPanel>
-            </AccordionItem>
-
-            <div className="w-full mb-4">
-              <button
-                type="submit"
-                disabled={generatingState}
-                className={`${
-                  generatingState ? "bg-green-100" : "bg-green-500"
-                } text-white p-2 rounded`}
-              >
-                {generatingState ? "Loading..." : <Send2 />}
-              </button>
+              </div>
+              <div className={`tab-send-btn h-full flex-shrink-0 w-24 rounded-full  grid place-items-center ${generatingState ? 'bg-gray-500' : 'bg-progress-green'}`}>
+                <button type="submit" disabled={generatingState}>
+                  <Send2 color="#fff" size="40px" type="submit" />
+                </button>
+              </div>
             </div>
-          </Accordion>
+          </div>
+          <div className="form-tab-content w-full grid place-items-center pt-3">
+            {tabs.map((tab, index) => {
+              return (
+                <div
+                  key={index}
+                  className={`w-full tab-content px-4 ${
+                    activeTab === index ? "block" : "hidden"
+                  }`}
+                >
+                  <h3 className="text-2xl font-bold text-left">
+                    {tab.text} Section
+                  </h3>
+                  <tab.component
+                    resumeInfo={resumeInfo}
+                    handleInfoInputChange={tab.handleChange}
+                  />
+                </div>
+              );
+            })}
+          </div>
+          <div className="w-full pt-6">
+            <button className={`${generatingState ? 'bg-gray-500' : 'bg-progress-green'} px-7 py-4 rounded-full w-24`} disabled={generatingState}>
+              <Send2 className=" text-white" size={"40px"} type="button" />
+            </button>
+          </div>
         </form>
       </div>
-      <div className="w-full sm:w-1/2 h-svh">
+      <div className="pdf-preview-section  flex-grow md:w-1/2">
         {/* the output tab with bg color white */}
         <PdfSection
           className="w-full"
           documentTitle={resumeInfo?.name ?? "Quick Cv"}
+          ref={pdfSectionRef}
         >
           {rawContent}
         </PdfSection>

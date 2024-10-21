@@ -6,7 +6,14 @@ export type IconProps = React.ReactNode | { position: 'left' | 'right', display:
 
 // Label component
 export function Label({ text, ...props }: { text: string } & React.LabelHTMLAttributes<HTMLLabelElement>) {
-    return <label className="text-sm text-left w-full" {...props}>{text}</label>;
+    return (
+      <label
+        className="text-xl font-normal text-green-light-opacity text-left w-full"
+        {...props}
+      >
+        {text}
+      </label>
+    );
 }
 
 // Input component with Tailwind CSS styling and label of type string or an object with all props available for a label
@@ -33,23 +40,31 @@ export const Input = forwardRef<HTMLInputElement, { label?: string  |false | Cus
     }
 
     return (
-        <div className="flex flex-col w-full gap-2">
-            {label && typeof label === 'string' ? (
-                <Label text={label} htmlFor={props.id} />
-            ) : label && typeof label !== 'string' ? (
-                <Label text={label.text || ''} {...label} htmlFor={props.id} />
-            ) : null}
-            <div className={`flex ${iconPosition === 'right' ? 'flex-row-reverse' : 'flex-row'} items-center w-full`}>
-                {DisplayIcon && <span className="flex items-center justify-center px-2">{DisplayIcon}</span>}
-                <input
-                    type={props.type}
-                    {...props}
-                    className={`border border-gray-300 rounded px-2 py-1 text-black placeholder-black inverse-color flex-grow ${props.className}`}
-                    ref={ref}
-                    required={false}
-                />
-            </div>
+      <div className="flex flex-col w-full gap-2">
+        {label && typeof label === "string" ? (
+          <Label text={label} htmlFor={props.id} />
+        ) : label && typeof label !== "string" ? (
+          <Label text={label.text || ""} {...label} htmlFor={props.id} />
+        ) : null}
+        <div
+          className={`flex ${
+            iconPosition === "right" ? "flex-row-reverse" : "flex-row"
+          } items-center w-full h-10`}
+        >
+          {DisplayIcon && (
+            <span className="flex items-center justify-center px-2">
+              {DisplayIcon}
+            </span>
+          )}
+          <input
+            type={props.type}
+            {...props}
+            className={`w-full h-full px-2 border-b text-progress-green border-b-green-light-opacity bg-light-gray-opacity placeholder:text-green-light-opacity ${props.className}`}
+            ref={ref}
+            required={false}
+          />
         </div>
+      </div>
     );
 });
 
@@ -64,7 +79,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, { label?: string | Custo
         ) : null}
         <textarea
           {...props}
-          className={`border border-gray-300 rounded px-2 py-1 w-full text-black placeholder-black inverse-color min-h-[200px] h-fit ${props.className}`}
+          className={`px-2 text-progress-green border-b-green-light-opacity bg-light-gray-opacity inverse-color min-h-[200px] h-fit ${props.className}`}
           ref={ref}
           required={false}
         />
