@@ -1,12 +1,9 @@
 "use client";
 import {
   BasicResumeInfo,
-  Education,
-  Experience,
   generateResume,
 } from "@/app/actions";
 import {
-  Add,
   Briefcase,
   Link1,
   Next,
@@ -52,7 +49,7 @@ type Tab = {
 
 function InfoSection({
   resumeInfo = null,
-  handleChange
+  handleChange,
 }: {
   resumeInfo: BasicResumeInfo | null;
   handleChange: (data: BasicResumeInfo) => void;
@@ -64,39 +61,38 @@ function InfoSection({
   ) => {
     const { name, value } = e.target;
     setInfo((prev) => ({ ...prev, [name]: value } as BasicResumeInfo));
+    handleChange({ ...info, [name]: value } as BasicResumeInfo);
   };
 
   useEffect(() => {
-    if (info) {
-      handleChange(info);
+    if (resumeInfo) {
+      setInfo(resumeInfo);
     }
-  }, [info]);
+  }, [resumeInfo]);
+
 
   return (
     <div className="w-full flex flex-col gap-6">
-      {/* <div className="form-tab w-full "> */}
       {fields.map((field, index) => {
         return field?.type !== "textarea" ? (
           <Input
             key={index}
             {...field}
             onChange={handleInputChange}
-            value={`${resumeInfo?.[field.name] ?? ""}`}
+            value={`${info?.[field.name] ?? ""}`}
           />
         ) : (
           <TextArea
             key={index}
             {...field}
             onChange={handleInputChange}
-            value={`${resumeInfo?.[field.name] ?? ""}`}
+            value={`${info?.[field.name] ?? ""}`}
           />
         );
       })}
-      {/* </div> */}
     </div>
   );
 }
-
 function SocialSection({
   resumeInfo = null,
   handleChange,
