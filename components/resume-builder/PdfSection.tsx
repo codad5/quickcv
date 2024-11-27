@@ -13,8 +13,9 @@ export const PdfSection = forwardRef<
   {
     children: string;
     documentTitle?: string;
+    onContentChange?: (content: string) => void;
   } & React.HTMLAttributes<HTMLDivElement>
->(({ children, documentTitle, ...props }, ref) => {
+>(({ children, documentTitle, onContentChange, ...props }, ref) => {
   const [viewRaw, setViewRaw] = useState(false);
   const [rawContent, setRawContent] = useState(children);
   const printableRef = useRef(null);
@@ -36,7 +37,10 @@ export const PdfSection = forwardRef<
 
   const syncContent = () => {
     if (textareaRef.current) {
-      setRawContent(textareaRef.current.value);
+      const newContent = textareaRef.current.value;
+      setRawContent(newContent);
+      // Call the onContentChange prop if provided
+      onContentChange?.(newContent);
     }
   };
 

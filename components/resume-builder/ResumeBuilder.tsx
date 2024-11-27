@@ -34,6 +34,8 @@ import { readStreamableValue } from "ai/rsc";
 import { Input, TextArea } from "../forms/inputs";
 import { PdfSection } from "./PdfSection";
 import CreditUsage from "../commons/CreditUsage";
+import indexdb from "@/helpers/indexdb";
+import { date } from "zod";
 
 type TabComponent = (props: {
   resumeInfo: BasicResumeInfo | null;
@@ -191,6 +193,51 @@ export default function ResumeBuilder({MAX_CREDIT, remains}: {MAX_CREDIT: number
     }
   }, []);
 
+  useEffect(() => {
+    const loadLastGenerated = async () => {
+      try {
+        await indexdb.init();
+        const data = await indexdb.get<{
+          id: number;
+          data: string;
+          date: string;
+        }>("last_generated", 1);
+
+        if (data?.data) {
+          setRawContent(data.data);
+          console.log("Loaded last generated content");
+        } else {
+          console.log("No previous content found");
+        }
+      } catch (error) {
+        console.error("Error loading last generated content:", error);
+        newNotification("Could not load previous resume", "info");
+      }
+    };
+
+    loadLastGenerated();
+  }, []);
+
+  // to auto save raw content 
+  useEffect(() => {
+    if (generatingState || rawContent.length < 25) {
+      return;
+    }
+    indexdb
+      .init()
+      .then(() => {
+        console.log("auto saving last data");
+        indexdb.put("last_generated", {
+          id: 1,
+          date: new Date().toISOString(),
+          data: rawContent,
+        });
+      })
+      .catch((e) => {
+        console.error(e, "autosave error");
+      });
+  }, [rawContent]);
+
   // set interval to update save data to remember me local storage every 9 seconds
   useEffect(() => {
     const interval = setInterval(() => {
@@ -220,6 +267,11 @@ export default function ResumeBuilder({MAX_CREDIT, remains}: {MAX_CREDIT: number
       );
     };
   }, []);
+
+  const handleManualContentUpdate = (newContent: string) => {
+    setRawContent(newContent);
+    setChangeMade(true); // To indicate content has been manually modified
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -439,6 +491,7 @@ export default function ResumeBuilder({MAX_CREDIT, remains}: {MAX_CREDIT: number
           className="w-full"
           documentTitle={resumeInfo?.name ?? "Quick Cv"}
           ref={pdfSectionRef}
+          onContentChange={handleManualContentUpdate}
         >
           {rawContent}
         </PdfSection>
