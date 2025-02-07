@@ -47,7 +47,6 @@ function MultipleGroupFields<T>({
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-
   useEffect(() => {
     setGroupData(defaultValues);
   }, [defaultValues]);
@@ -151,6 +150,7 @@ function MultipleGroupFields<T>({
             name={field.name}
             onChange={handleInputChange}
             value={value}
+            title="select"
             className={`w-full p-2 border rounded text-black ${isRequired}`}
           >
             <option value="">{field.placeholder}</option>
@@ -185,6 +185,23 @@ function MultipleGroupFields<T>({
     }
   };
 
+  // const parseStyle = (cssString: string): Record<string, string> =>
+  //   cssString
+  //     .split(";")
+  //     .filter(Boolean)
+  //     .reduce((acc, rule) => {
+  //       const [key, value] = rule.split(":").map((str) => str.trim());
+  //       if (key && value) {
+  //         acc[key.replace(/-([a-z])/g, (_, char) => char.toUpperCase())] =
+  //           value;
+  //       }
+  //       return acc;
+  //     }, {} as Record<string, string>);
+
+  // const styleString =
+  //   "position: fixed;display: flex;justify-content: center;width: 100%;height: 100%;background: rgba(0, 0, 0, 0.7);overflow:scroll;z-index: 1000;";
+  // const styleObject = parseStyle(styleString);
+
   return (
     <div className="flex flex-col items-center justify-center space-y-4 w-full">
       {errors.length > 0 && !onErrors && (
@@ -196,7 +213,7 @@ function MultipleGroupFields<T>({
       )}
 
       {isModalOpen && (
-        <div className="grid place-items-center fixed inset-0 w-svw h-svh bg-light-gray-opacity-2 py-4 z-30">
+        <div className="fixed flex flex-row justify-center overflow-scroll inset-0 w-full h-full bg-light-gray-opacity-2 py-4 z-50">
           <div className="px-10 py-12 bg-deep-blue max-h-[800px] overflow-y-auto rounded-3xl flex flex-col gap-4">
             {fields.map((field, index) => (
               <div key={index} className="w-full">
@@ -269,7 +286,6 @@ function MultipleGroupFields<T>({
       </div>
     </div>
   );
-
 }
 
 export function Fields<T>({
@@ -278,7 +294,7 @@ export function Fields<T>({
   onChange,
   defaultValues = [],
   allowEdit = true,
-  onErrors
+  onErrors,
 }: FieldProps<T>) {
   return (
     <MultipleGroupFields<T>
@@ -287,7 +303,10 @@ export function Fields<T>({
       onChange={onChange}
       defaultValues={defaultValues}
       allowEdit={allowEdit}
-      onErrors={onErrors ?? ((errors) => errors.forEach((error) => newNotification(error, "error")))}
+      onErrors={
+        onErrors ??
+        ((errors) => errors.forEach((error) => newNotification(error, "error")))
+      }
     />
   );
 }
@@ -399,7 +418,7 @@ export function SocialMultipleFields({
   onChange,
   defaultValues = [],
 }: {
-  onChange?: (data:  Social[]) => void;
+  onChange?: (data: Social[]) => void;
   defaultValues?: Social[];
 }) {
   const fields: GroupField<keyof Social>[] = [
