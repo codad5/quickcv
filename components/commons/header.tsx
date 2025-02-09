@@ -14,31 +14,30 @@ const navLinks = [
 
 export default function Header() {
     return (
-      <header className="w-full grid place-items-center md:px-10 px-3 md:py-8 py-5">
+      <header className="w-full md:px-10 px-3">
         <Next13NProgress color="#3DD973" height={5} />
-        <div className="w-full bg-deep-blue-opacity rounded-full h-[100px] px-11">
-          <div className="w-full h-full flex justify-between">
-            <div className="flex items-center">
-              <h1 className="text-4xl font-bold">
-                <Link href="/">QuickCv</Link>
-              </h1>
-            </div>
-            {/* show only on large screen and not on phones */}
-            <nav className="items-center hidden md:flex">
-              {navLinks.map((navLink, index) => (
-                <Link
-                  key={index}
-                  href={navLink.url}
-                  className="mx-4 text-2xl font-light underline"
-                >
-                  {navLink.title}
-                </Link>
-              ))}
-            </nav>
-            {/* mobile nav */}
-            <MobileNav navLinks={navLinks} />
+        <nav className="flex items-center justify-between mb-16">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">
+            QuickCV
+          </h1>
+          <div className="flex space-x-6">
+            {navLinks.map((navLink, index) => (
+              <Link
+                key={index}
+                href={navLink.url}
+                className="text-gray-400 hover:text-white transition-colors grid place-items-center"
+              >
+                {navLink.title}
+              </Link>
+            ))}
+            <Link
+              href={"/resume-generator"}
+              className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors"
+            >
+              Get Started
+            </Link>
           </div>
-        </div>
+        </nav>
       </header>
     );
 }

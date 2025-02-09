@@ -35,7 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} w-dvw bg-deep-blue text-light-gray h-max min-h-dvh flex flex-col relative overflow-x-clip md:overflow-x-clip`}
+        className={`${inter.className} w-dvw bg-deep-blue text-light-gray h-max min-h-dvh flex flex-col relative overflow-x-clip md:overflow-x-clip py-8`}
       >
         <NotificationComponent />
         <Header />
